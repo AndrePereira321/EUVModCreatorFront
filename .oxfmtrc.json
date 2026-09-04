@@ -3,5 +3,6 @@
 	"ignorePatterns": [],
 	"printWidth": 120,
 	"useTabs": true,
-	"sortImports": true
+	"sortImports": true,
+	"sortTailwindcss": { "stylesheet": "./src/styles/index.css" }
 }

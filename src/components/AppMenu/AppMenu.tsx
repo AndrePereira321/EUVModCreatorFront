@@ -16,7 +16,7 @@ export default function AppMenu() {
 	];
 
 	return (
-		<nav className="flex gap-4 px-2 py-4 border-b border-primary-300">
+		<nav className="flex gap-4 border-b border-primary-300 px-2 py-4">
 			<div>
 				<h2 className="text-primary">{t("app.title")}</h2>
 			</div>
