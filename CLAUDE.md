@@ -28,6 +28,7 @@ Organized **by type, not by feature.** The app is small and the EU5 domain objec
 ```
 src/
 ├─ components/       <- UI components, grouped in subfolders by kind (layout/ holds the app shell)
+├─ i18n/             <- Paraglide: project.inlang/ config, labels/ source strings, paraglide/ generated
 ├─ styles/index.css  <- @import "tailwindcss"; @theme customizations go here
 └─ main.tsx          <- entry point: createRoot + <StrictMode> + <AppMain />
 ```
@@ -38,8 +39,8 @@ not before.
 ## Internationalization (i18n)
 
 **All user-facing text goes through Paraglide (`@inlang/paraglide-js`) — never hardcoded.** Config lives in
-`i18n/project.inlang/`, source strings in `i18n/labels/{locale}.json`. `i18n/paraglide/` is generated
-(gitignored) — don't hand-edit it.
+`src/i18n/project.inlang/`, source strings in `src/i18n/labels/{locale}.json`. `src/i18n/paraglide/` is
+generated (gitignored) — don't hand-edit it.
 
 ```tsx
 import { m } from "@paraglide/messages.js";
@@ -47,10 +48,10 @@ import { m } from "@paraglide/messages.js";
 <span>{m.app_title()}</span>;
 ```
 
-Adding a string: add a key to `i18n/labels/en.json`, then call `m.yourKey()`.
+Adding a string: add a key to `src/i18n/labels/en.json`, then call `m.yourKey()`.
 
 Gotcha: `tsc -b` runs before Vite in `npm run build` and can't see the Vite plugin, so `build` runs
-`compile:i18n` first to put `i18n/paraglide/` on disk before typechecking. `dev` doesn't need this — the Vite
+`compile:i18n` first to put `src/i18n/paraglide/` on disk before typechecking. `dev` doesn't need this — the Vite
 plugin generates it itself before serving.
 
 **Write for a non-technical player, not a developer.** Short, plain sentences, no jargon — same target

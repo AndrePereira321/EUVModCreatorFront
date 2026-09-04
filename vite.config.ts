@@ -9,14 +9,14 @@ export default defineConfig({
 		react(),
 		tailwindcss(),
 		paraglideVitePlugin({
-			project: "./i18n/project.inlang",
-			outdir: "./i18n/paraglide",
+			project: "./src/i18n/project.inlang",
+			outdir: "./src/i18n/paraglide",
 			emitTsDeclarations: true,
 		}),
 	],
 	resolve: {
 		alias: {
-			"@paraglide": `${import.meta.dirname}/i18n/paraglide`,
+			"@paraglide": `${import.meta.dirname}/src/i18n/paraglide`,
 		},
 	},
 	server: {

@@ -23,7 +23,7 @@
 		"noFallthroughCasesInSwitch": true,
 
 		"paths": {
-			"@paraglide/*": ["./i18n/paraglide/*"]
+			"@paraglide/*": ["./src/i18n/paraglide/*"]
 		}
 	},
 	"include": ["src"]
