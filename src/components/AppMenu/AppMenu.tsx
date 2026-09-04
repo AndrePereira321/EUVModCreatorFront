@@ -1,7 +1,9 @@
+import { m } from "@paraglide/messages.js";
+
 export default function AppMenu() {
 	return (
 		<nav>
-			<span>EU5 Mod Creator</span>
+			<span>{m.app_title()}</span>
 		</nav>
 	);
 }

@@ -10,7 +10,7 @@ Run these from this folder, not the workspace root.
 ```bash
 npm install          # node_modules is gitignored and may be absent
 npm run dev          # vite dev server
-npm run build        # tsc -b && vite build — typechecks project references, then builds
+npm run build        # compiles i18n, then tsc -b && vite build — typechecks project references, then builds
 npm run lint         # oxlint
 npm run format       # oxfmt (writes in place)
 npm run format:check
@@ -34,6 +34,27 @@ src/
 
 Revisit when the first real mod-editing feature lands — that is the trigger to consider `src/features/<name>/`,
 not before.
+
+## Internationalization (i18n)
+
+**All user-facing text goes through Paraglide (`@inlang/paraglide-js`) — never hardcoded.** Config lives in
+`i18n/project.inlang/`, source strings in `i18n/labels/{locale}.json`. `i18n/paraglide/` is generated
+(gitignored) — don't hand-edit it.
+
+```tsx
+import { m } from "@paraglide/messages.js";
+
+<span>{m.app_title()}</span>;
+```
+
+Adding a string: add a key to `i18n/labels/en.json`, then call `m.yourKey()`.
+
+Gotcha: `tsc -b` runs before Vite in `npm run build` and can't see the Vite plugin, so `build` runs
+`compile:i18n` first to put `i18n/paraglide/` on disk before typechecking. `dev` doesn't need this — the Vite
+plugin generates it itself before serving.
+
+**Write for a non-technical player, not a developer.** Short, plain sentences, no jargon — same target
+audience as the rest of the app, applied to copy.
 
 ## Toolchain gotchas
 
