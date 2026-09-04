@@ -46,6 +46,14 @@ or their packages — config lives in `.oxlintrc.json` and `.oxfmtrc.json`.
 `@import "tailwindcss"` in `src/styles/index.css`. There is deliberately **no `tailwind.config.js` and no PostCSS
 config** — do not create them. Customize the theme with `@theme { ... }` in CSS.
 
+**Theme tokens.** `src/styles/index.css` replaces Tailwind's stock palette (`--color-*: initial`) with the project
+ramps (`ink`, `gilt`, `verdant`, `ember`, `oxblood`) and exposes semantic tokens through `@theme inline`. Components
+use the semantic names — `bg-background`, `bg-surface`, `text-foreground`, `text-muted`, `border-border`,
+`border-input`, `bg-accent` + `text-accent-foreground`, `text-accent-strong`, `text-positive` / `-caution` /
+`-negative` and their `-soft` backgrounds. Reach for a raw ramp step only inside `index.css`. Dark mode is
+`data-theme="dark"` on an ancestor, light is the default. Web fonts are not set up yet; `--font-display` is a
+fallback stack until that is decided.
+
 **TypeScript settings that fail the build:**
 
 - `verbatimModuleSyntax` — type-only imports must be written `import type { Foo } from "..."`.

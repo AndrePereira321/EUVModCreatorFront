@@ -1,1 +1,157 @@
 @import "tailwindcss";
+
+/*
+ * Theme structure (Tailwind v4, CSS-first — there is no tailwind.config.js):
+ *
+ *   1. @theme                     primitive tokens. Every --color-* here becomes a utility: bg-gilt-500, text-ink-700…
+ *   2. :root / [data-theme=dark]  semantic tokens as plain CSS variables, one value per theme. No utilities.
+ *   3. @theme inline              exposes the semantic tokens as utilities: bg-background, text-muted, border-border…
+ *                                 `inline` makes the utility read the variable on the element itself, which is what
+ *                                 lets the dark override apply below <html>.
+ *   4. @layer base                element defaults. Utilities in components still win over these.
+ *
+ * Components use the semantic names. The primitive ramps are referenced from this file only.
+ */
+
+/* `dark:` utilities respond to data-theme="dark" on an ancestor, not to the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme {
+	/* Drop Tailwind's stock palette: only the ramps below produce color utilities. */
+	--color-*: initial;
+	--color-white: #fff;
+	--color-black: #000;
+
+	/* ink — warm neutral, page and text. */
+	--color-ink-50: oklch(0.985 0.005 70);
+	--color-ink-100: oklch(0.965 0.006 70);
+	--color-ink-200: oklch(0.925 0.008 70);
+	--color-ink-300: oklch(0.87 0.009 70);
+	--color-ink-400: oklch(0.73 0.01 70);
+	--color-ink-500: oklch(0.6 0.011 70);
+	--color-ink-600: oklch(0.49 0.011 70);
+	--color-ink-700: oklch(0.41 0.011 70);
+	--color-ink-800: oklch(0.32 0.011 70);
+	--color-ink-900: oklch(0.25 0.011 70);
+	--color-ink-950: oklch(0.18 0.011 70);
+
+	/* gilt — the one accent. Fills and focus in the 400–600 range, text in 300 (dark) / 800 (light). */
+	--color-gilt-50: oklch(0.98 0.03 82);
+	--color-gilt-100: oklch(0.95 0.07 82);
+	--color-gilt-200: oklch(0.91 0.1 82);
+	--color-gilt-300: oklch(0.86 0.13 82);
+	--color-gilt-400: oklch(0.8 0.14 82);
+	--color-gilt-500: oklch(0.74 0.14 82);
+	--color-gilt-600: oklch(0.65 0.13 82);
+	--color-gilt-700: oklch(0.56 0.11 82);
+	--color-gilt-800: oklch(0.47 0.09 82);
+	--color-gilt-900: oklch(0.38 0.07 82);
+	--color-gilt-950: oklch(0.29 0.05 82);
+
+	/* Status ramps, mirroring the game's positive / neutral / negative text colors. */
+	--color-verdant-100: oklch(0.95 0.05 148);
+	--color-verdant-300: oklch(0.8 0.11 148);
+	--color-verdant-500: oklch(0.6 0.13 148);
+	--color-verdant-700: oklch(0.45 0.11 148);
+	--color-verdant-900: oklch(0.3 0.06 148);
+
+	--color-ember-100: oklch(0.96 0.045 60);
+	--color-ember-300: oklch(0.83 0.115 60);
+	--color-ember-500: oklch(0.68 0.16 60);
+	--color-ember-700: oklch(0.5 0.12 60);
+	--color-ember-900: oklch(0.32 0.07 60);
+
+	--color-oxblood-100: oklch(0.95 0.03 25);
+	--color-oxblood-300: oklch(0.78 0.11 25);
+	--color-oxblood-500: oklch(0.56 0.16 25);
+	--color-oxblood-700: oklch(0.44 0.15 25);
+	--color-oxblood-900: oklch(0.3 0.08 25);
+
+	/* Headings. Web fonts are not set up yet; this is the fallback stack until they are. */
+	--font-display: Georgia, "Times New Roman", serif;
+}
+
+:root {
+	color-scheme: light;
+
+	--background: var(--color-ink-100);
+	--surface: var(--color-ink-50);
+	--foreground: var(--color-ink-900);
+	--muted: var(--color-ink-600);
+	--border: var(--color-ink-300);
+	--input: var(--color-ink-500);
+	--ring: var(--color-gilt-600);
+
+	--accent: var(--color-gilt-500);
+	--accent-foreground: var(--color-ink-950);
+	--accent-strong: var(--color-gilt-800);
+
+	--positive: var(--color-verdant-700);
+	--positive-soft: var(--color-verdant-100);
+	--caution: var(--color-ember-700);
+	--caution-soft: var(--color-ember-100);
+	--negative: var(--color-oxblood-700);
+	--negative-soft: var(--color-oxblood-100);
+}
+
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	--background: var(--color-ink-950);
+	--surface: var(--color-ink-900);
+	--foreground: var(--color-ink-100);
+	--muted: var(--color-ink-400);
+	--border: var(--color-ink-800);
+	--input: var(--color-ink-600);
+	--ring: var(--color-gilt-400);
+
+	--accent: var(--color-gilt-400);
+	--accent-foreground: var(--color-ink-950);
+	--accent-strong: var(--color-gilt-300);
+
+	--positive: var(--color-verdant-300);
+	--positive-soft: var(--color-verdant-900);
+	--caution: var(--color-ember-300);
+	--caution-soft: var(--color-ember-900);
+	--negative: var(--color-oxblood-300);
+	--negative-soft: var(--color-oxblood-900);
+}
+
+@theme inline {
+	--color-background: var(--background);
+	--color-surface: var(--surface);
+	--color-foreground: var(--foreground);
+	--color-muted: var(--muted);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-accent-strong: var(--accent-strong);
+
+	--color-positive: var(--positive);
+	--color-positive-soft: var(--positive-soft);
+	--color-caution: var(--caution);
+	--color-caution-soft: var(--caution-soft);
+	--color-negative: var(--negative);
+	--color-negative-soft: var(--negative-soft);
+}
+
+@layer base {
+	body {
+		background-color: var(--background);
+		color: var(--foreground);
+	}
+
+	h1,
+	h2,
+	h3 {
+		font-family: var(--font-display);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--ring);
+		outline-offset: 2px;
+	}
+}
