@@ -10,7 +10,7 @@ Run these from this folder, not the workspace root.
 ```bash
 npm install          # node_modules is gitignored and may be absent
 npm run dev          # vite dev server
-npm run build        # compiles i18n, then tsc -b && vite build — typechecks project references, then builds
+npm run build        # tsc -b && vite build — typechecks project references, then builds
 npm run lint         # oxlint
 npm run format       # oxfmt (writes in place)
 npm run format:check
@@ -28,7 +28,7 @@ Organized **by type, not by feature.** The app is small and the EU5 domain objec
 ```
 src/
 ├─ components/       <- UI components, grouped in subfolders by kind (layout/ holds the app shell)
-├─ i18n/             <- Paraglide: project.inlang/ config, labels/ source strings, paraglide/ generated
+├─ i18n/             <- i18next: config.ts init, i18next.d.ts key types, labels/ source strings
 ├─ styles/index.css  <- @import "tailwindcss"; @theme customizations go here
 └─ main.tsx          <- entry point: createRoot + <StrictMode> + <AppMain />
 ```
@@ -38,21 +38,27 @@ not before.
 
 ## Internationalization (i18n)
 
-**All user-facing text goes through Paraglide (`@inlang/paraglide-js`) — never hardcoded.** Config lives in
-`src/i18n/project.inlang/`, source strings in `src/i18n/labels/{locale}.json`. `src/i18n/paraglide/` is
-generated (gitignored) — don't hand-edit it.
+**All user-facing text goes through i18next (`react-i18next`) — never hardcoded.** Strings live in
+`src/i18n/labels/{locale}.json` under the `labels` namespace. `src/i18n/config.ts` initializes i18next with those
+resources and is imported once, for its side effect, from `src/main.tsx`.
 
 ```tsx
-import { m } from "@paraglide/messages.js";
+import { useTranslation } from "react-i18next";
 
-<span>{m.app_title()}</span>;
+const { t } = useTranslation();
+
+<span>{t("app.title")}</span>;
 ```
 
-Adding a string: add a key to `src/i18n/labels/en.json`, then call `m.yourKey()`.
+Adding a string: add a key to `src/i18n/labels/en.json`, then call `t("group.key")`. Nothing to compile — the JSON
+is imported directly. `src/i18n/i18next.d.ts` augments i18next's `CustomTypeOptions` with `typeof en`, so keys
+autocomplete and a typo fails `npm run build`.
 
-Gotcha: `tsc -b` runs before Vite in `npm run build` and can't see the Vite plugin, so `build` runs
-`compile:i18n` first to put `src/i18n/paraglide/` on disk before typechecking. `dev` doesn't need this — the Vite
-plugin generates it itself before serving.
+**Group keys by nesting one level** — `app.title`, `generic.home`, later `menu.*`, `province.*`. i18next reads
+nested JSON natively and flattens it to dotted keys; the key type follows, so `t("generic.home")` autocompletes.
+
+**Only components that own their copy call `t()`.** A component that just renders a label it was handed takes a
+resolved string, and the parent does the lookup: `<AppMenuItem title={t("generic.home")} />`.
 
 **Write for a non-technical player, not a developer.** Short, plain sentences, no jargon — same target
 audience as the rest of the app, applied to copy.

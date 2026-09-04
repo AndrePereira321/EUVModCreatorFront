@@ -12,9 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Paraglide compiles this from src/i18n/labels/ on every dev/build run
-src/i18n/paraglide
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

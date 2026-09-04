@@ -10,6 +10,7 @@
 
 		/* Bundler mode */
 		"moduleResolution": "bundler",
+		"resolveJsonModule": true,
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
 		"moduleDetection": "force",
@@ -20,11 +21,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true,
-
-		"paths": {
-			"@paraglide/*": ["./src/i18n/paraglide/*"]
-		}
+		"noFallthroughCasesInSwitch": true
 	},
 	"include": ["src"]
 }
