@@ -1,0 +1,23 @@
+#!/bin/sh
+# Runs before every commit, from the repo root. Bypass with --no-verify (don't).
+# Checks only — never rewrites staged files.
+
+if ! npm run --silent format:check; then
+	echo ""
+	echo "pre-commit: formatting is off. Run 'npm run format', re-stage, and commit again."
+	exit 1
+fi
+
+if ! npm run --silent lint; then
+	echo ""
+	echo "pre-commit: oxlint found problems. Fix them and commit again."
+	exit 1
+fi
+
+if ! npm run --silent build; then
+	echo ""
+	echo "pre-commit: typecheck or build failed. Fix it and commit again."
+	exit 1
+fi
+
+echo "pre-commit: format, lint and build all passed."
