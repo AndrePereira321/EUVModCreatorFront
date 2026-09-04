@@ -67,11 +67,27 @@ or their packages — config lives in `.oxlintrc.json` and `.oxfmtrc.json`.
 `@import "tailwindcss"` in `src/styles/index.css`. There is deliberately **no `tailwind.config.js` and no PostCSS
 config** — do not create them. Customize the theme with `@theme { ... }` in CSS.
 
-**Theme tokens.** `src/styles/index.css` replaces Tailwind's stock palette (`--color-*: initial`) with the project
-ramps (`ink`, `gilt`, `verdant`, `ember`, `oxblood`) and exposes semantic tokens through `@theme inline`. Components
-use the semantic names — `bg-background`, `bg-surface`, `text-foreground`, `text-muted`, `border-border`,
-`border-input`, `bg-accent` + `text-accent-foreground`, `text-accent-strong`, `text-positive` / `-caution` /
-`-negative` and their `-soft` backgrounds. Reach for a raw ramp step only inside `index.css`. Dark mode is
+**Theme tokens.** `src/styles/index.css` replaces Tailwind's stock palette (`--color-*: initial`) with eight ramps
+named after their role — `neutral`, `primary` (gold), `secondary` (lapis blue), `tertiary` (plum), `success`
+(green), `info` (steel blue), `warning` (orange), `error` (red) — and layers theme-aware semantic tokens on top
+through `@theme inline`. That gives two kinds of utility:
+
+- **Numbered** — `bg-primary-500`, `border-primary-300`, `text-neutral-700`. A fixed colour; it does **not** follow
+  the theme, so handle dark yourself: `border-primary-800 dark:border-primary-300`.
+- **Unnumbered** — theme-aware, swaps automatically under `[data-theme="dark"]`. Prefer these.
+
+Neutrals: `bg-background`, `bg-surface`, `text-foreground`, `text-muted`, `border-border`, `border-input`, `ring-ring`.
+
+Each of the seven roles has the same four theme-aware tokens — swap the role name and they behave identically:
+
+| token                     | use                                                                       |
+| ------------------------- | ------------------------------------------------------------------------- |
+| `bg-primary`              | the solid fill — buttons, active tabs, filled badges                      |
+| `text-primary-foreground` | text on that fill; only ever paired with `bg-primary`                     |
+| `bg-primary-soft`         | tinted panel — alerts, chips; put `text-primary-strong` on it             |
+| `text-primary-strong`     | role-coloured text/icons on background, surface or soft; also `hover:bg-` |
+
+`-strong` means strongest against the page: darker in light mode, lighter in dark mode. Dark mode is
 `data-theme="dark"` on an ancestor, light is the default. Web fonts are not set up yet; `--font-display` is a
 fallback stack until that is decided.
 

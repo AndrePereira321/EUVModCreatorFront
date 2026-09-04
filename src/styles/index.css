@@ -3,14 +3,32 @@
 /*
  * Theme structure (Tailwind v4, CSS-first — there is no tailwind.config.js):
  *
- *   1. @theme                     primitive tokens. Every --color-* here becomes a utility: bg-gilt-500, text-ink-700…
+ *   1. @theme                     the ramps. Every --color-* here becomes a utility: bg-primary-500, text-neutral-700…
  *   2. :root / [data-theme=dark]  semantic tokens as plain CSS variables, one value per theme. No utilities.
- *   3. @theme inline              exposes the semantic tokens as utilities: bg-background, text-muted, border-border…
+ *   3. @theme inline              exposes the semantic tokens as utilities: bg-primary, text-muted, border-border…
  *                                 `inline` makes the utility read the variable on the element itself, which is what
  *                                 lets the dark override apply below <html>.
  *   4. @layer base                element defaults. Utilities in components still win over these.
  *
- * Components use the semantic names. The primitive ramps are referenced from this file only.
+ * ── Two kinds of colour utility, and when to reach for each ──────────────────
+ *
+ * NUMBERED — bg-primary-500, border-primary-300, text-error-700. A fixed colour. It does NOT change with the
+ * theme, so in dark mode you pick the other end yourself: `border-primary-800 dark:border-primary-300`.
+ * Use these for one-off shading where no semantic token fits.
+ *
+ * UNNUMBERED — bg-primary, text-primary-foreground, bg-primary-soft, text-primary-strong. Theme-aware: the
+ * value swaps automatically under [data-theme="dark"], so you write one class and both themes work.
+ * Prefer these. Seven roles — primary, secondary, tertiary, success, info, warning, error — each with the
+ * same four:
+ *
+ *   bg-primary               the solid fill.        Buttons, active tabs, filled badges.
+ *   text-primary-foreground  text ON that fill.     Only ever used together with bg-primary.
+ *   bg-primary-soft          a tinted panel.        Alert boxes, chips. Put text-primary-strong on it.
+ *   text-primary-strong      the high-contrast one. Role-coloured text and icons on background / surface / soft,
+ *                            and the hover state for the solid fill (hover:bg-primary-strong).
+ *
+ * "strong" means strongest against the page, so it is darker in light mode and lighter in dark mode.
+ * Swap `primary` for any other role name and the four behave identically.
  */
 
 /* `dark:` utilities respond to data-theme="dark" on an ancestor, not to the OS setting. */
@@ -22,50 +40,109 @@
 	--color-white: #fff;
 	--color-black: #000;
 
-	/* ink — warm neutral, page and text. */
-	--color-ink-50: oklch(0.985 0.005 70);
-	--color-ink-100: oklch(0.965 0.006 70);
-	--color-ink-200: oklch(0.925 0.008 70);
-	--color-ink-300: oklch(0.87 0.009 70);
-	--color-ink-400: oklch(0.73 0.01 70);
-	--color-ink-500: oklch(0.6 0.011 70);
-	--color-ink-600: oklch(0.49 0.011 70);
-	--color-ink-700: oklch(0.41 0.011 70);
-	--color-ink-800: oklch(0.32 0.011 70);
-	--color-ink-900: oklch(0.25 0.011 70);
-	--color-ink-950: oklch(0.18 0.011 70);
+	/* neutral — warm grey, hue 70. Page, text, borders. The only ramp that is not a role. */
+	--color-neutral-50: oklch(0.985 0.005 70);
+	--color-neutral-100: oklch(0.965 0.006 70);
+	--color-neutral-200: oklch(0.925 0.008 70);
+	--color-neutral-300: oklch(0.87 0.009 70);
+	--color-neutral-400: oklch(0.73 0.01 70);
+	--color-neutral-500: oklch(0.6 0.011 70);
+	--color-neutral-600: oklch(0.49 0.011 70);
+	--color-neutral-700: oklch(0.41 0.011 70);
+	--color-neutral-800: oklch(0.32 0.011 70);
+	--color-neutral-900: oklch(0.25 0.011 70);
+	--color-neutral-950: oklch(0.18 0.011 70);
 
-	/* gilt — the one accent. Fills and focus in the 400–600 range, text in 300 (dark) / 800 (light). */
-	--color-gilt-50: oklch(0.98 0.03 82);
-	--color-gilt-100: oklch(0.95 0.07 82);
-	--color-gilt-200: oklch(0.91 0.1 82);
-	--color-gilt-300: oklch(0.86 0.13 82);
-	--color-gilt-400: oklch(0.8 0.14 82);
-	--color-gilt-500: oklch(0.74 0.14 82);
-	--color-gilt-600: oklch(0.65 0.13 82);
-	--color-gilt-700: oklch(0.56 0.11 82);
-	--color-gilt-800: oklch(0.47 0.09 82);
-	--color-gilt-900: oklch(0.38 0.07 82);
-	--color-gilt-950: oklch(0.29 0.05 82);
+	/* primary — gold, hue 82. Gold cannot be dark and saturated at once, so this ramp runs lighter than the rest. */
+	--color-primary-50: oklch(0.98 0.03 82);
+	--color-primary-100: oklch(0.95 0.07 82);
+	--color-primary-200: oklch(0.91 0.1 82);
+	--color-primary-300: oklch(0.86 0.13 82);
+	--color-primary-400: oklch(0.8 0.14 82);
+	--color-primary-500: oklch(0.74 0.14 82);
+	--color-primary-600: oklch(0.65 0.13 82);
+	--color-primary-700: oklch(0.56 0.11 82);
+	--color-primary-800: oklch(0.47 0.09 82);
+	--color-primary-900: oklch(0.38 0.07 82);
+	--color-primary-950: oklch(0.29 0.05 82);
 
-	/* Status ramps, mirroring the game's positive / neutral / negative text colors. */
-	--color-verdant-100: oklch(0.95 0.05 148);
-	--color-verdant-300: oklch(0.8 0.11 148);
-	--color-verdant-500: oklch(0.6 0.13 148);
-	--color-verdant-700: oklch(0.45 0.11 148);
-	--color-verdant-900: oklch(0.3 0.06 148);
+	/* secondary — lapis, deep map-ink blue, hue 262. */
+	--color-secondary-50: oklch(0.97 0.015 262);
+	--color-secondary-100: oklch(0.94 0.03 262);
+	--color-secondary-200: oklch(0.88 0.055 262);
+	--color-secondary-300: oklch(0.8 0.085 262);
+	--color-secondary-400: oklch(0.68 0.12 262);
+	--color-secondary-500: oklch(0.58 0.15 262);
+	--color-secondary-600: oklch(0.5 0.155 262);
+	--color-secondary-700: oklch(0.43 0.14 262);
+	--color-secondary-800: oklch(0.36 0.115 262);
+	--color-secondary-900: oklch(0.3 0.09 262);
+	--color-secondary-950: oklch(0.23 0.06 262);
 
-	--color-ember-100: oklch(0.96 0.045 60);
-	--color-ember-300: oklch(0.83 0.115 60);
-	--color-ember-500: oklch(0.68 0.16 60);
-	--color-ember-700: oklch(0.5 0.12 60);
-	--color-ember-900: oklch(0.32 0.07 60);
+	/* tertiary — plum, heraldic purpure, hue 320. */
+	--color-tertiary-50: oklch(0.97 0.015 320);
+	--color-tertiary-100: oklch(0.94 0.03 320);
+	--color-tertiary-200: oklch(0.89 0.055 320);
+	--color-tertiary-300: oklch(0.81 0.09 320);
+	--color-tertiary-400: oklch(0.7 0.13 320);
+	--color-tertiary-500: oklch(0.6 0.155 320);
+	--color-tertiary-600: oklch(0.52 0.15 320);
+	--color-tertiary-700: oklch(0.45 0.135 320);
+	--color-tertiary-800: oklch(0.38 0.11 320);
+	--color-tertiary-900: oklch(0.31 0.085 320);
+	--color-tertiary-950: oklch(0.24 0.06 320);
 
-	--color-oxblood-100: oklch(0.95 0.03 25);
-	--color-oxblood-300: oklch(0.78 0.11 25);
-	--color-oxblood-500: oklch(0.56 0.16 25);
-	--color-oxblood-700: oklch(0.44 0.15 25);
-	--color-oxblood-900: oklch(0.3 0.08 25);
+	/* success — green, hue 148. */
+	--color-success-50: oklch(0.97 0.02 148);
+	--color-success-100: oklch(0.94 0.04 148);
+	--color-success-200: oklch(0.89 0.07 148);
+	--color-success-300: oklch(0.8 0.11 148);
+	--color-success-400: oklch(0.7 0.13 148);
+	--color-success-500: oklch(0.6 0.13 148);
+	--color-success-600: oklch(0.52 0.12 148);
+	--color-success-700: oklch(0.45 0.11 148);
+	--color-success-800: oklch(0.38 0.09 148);
+	--color-success-900: oklch(0.31 0.07 148);
+	--color-success-950: oklch(0.23 0.05 148);
+
+	/* info — steel blue, hue 235. Lower chroma than secondary on purpose: information must not read as an action. */
+	--color-info-50: oklch(0.97 0.012 235);
+	--color-info-100: oklch(0.94 0.025 235);
+	--color-info-200: oklch(0.88 0.045 235);
+	--color-info-300: oklch(0.8 0.07 235);
+	--color-info-400: oklch(0.71 0.09 235);
+	--color-info-500: oklch(0.62 0.1 235);
+	--color-info-600: oklch(0.53 0.1 235);
+	--color-info-700: oklch(0.45 0.09 235);
+	--color-info-800: oklch(0.38 0.075 235);
+	--color-info-900: oklch(0.31 0.06 235);
+	--color-info-950: oklch(0.23 0.04 235);
+
+	/* warning — orange, hue 52. More chroma than primary's gold, so a warning never reads as a gold action. */
+	--color-warning-50: oklch(0.97 0.02 52);
+	--color-warning-100: oklch(0.95 0.045 52);
+	--color-warning-200: oklch(0.9 0.08 52);
+	--color-warning-300: oklch(0.82 0.12 52);
+	--color-warning-400: oklch(0.75 0.15 52);
+	--color-warning-500: oklch(0.67 0.17 52);
+	--color-warning-600: oklch(0.58 0.16 52);
+	--color-warning-700: oklch(0.5 0.14 52);
+	--color-warning-800: oklch(0.42 0.115 52);
+	--color-warning-900: oklch(0.34 0.09 52);
+	--color-warning-950: oklch(0.25 0.06 52);
+
+	/* error — oxblood red, hue 25. */
+	--color-error-50: oklch(0.97 0.015 25);
+	--color-error-100: oklch(0.94 0.03 25);
+	--color-error-200: oklch(0.89 0.06 25);
+	--color-error-300: oklch(0.79 0.1 25);
+	--color-error-400: oklch(0.68 0.15 25);
+	--color-error-500: oklch(0.58 0.18 25);
+	--color-error-600: oklch(0.51 0.19 25);
+	--color-error-700: oklch(0.44 0.17 25);
+	--color-error-800: oklch(0.37 0.14 25);
+	--color-error-900: oklch(0.31 0.11 25);
+	--color-error-950: oklch(0.23 0.07 25);
 
 	/* Headings. Web fonts are not set up yet; this is the fallback stack until they are. */
 	--font-display: Georgia, "Times New Roman", serif;
@@ -74,47 +151,98 @@
 :root {
 	color-scheme: light;
 
-	--background: var(--color-ink-100);
-	--surface: var(--color-ink-50);
-	--foreground: var(--color-ink-900);
-	--muted: var(--color-ink-600);
-	--border: var(--color-ink-300);
-	--input: var(--color-ink-500);
-	--ring: var(--color-gilt-600);
+	/* Neutrals — the page itself. */
+	--background: var(--color-neutral-100);
+	--surface: var(--color-neutral-50);
+	--foreground: var(--color-neutral-900);
+	--muted: var(--color-neutral-600);
+	--border: var(--color-neutral-300);
+	--input: var(--color-neutral-500);
+	--ring: var(--color-primary-600);
 
-	--accent: var(--color-gilt-500);
-	--accent-foreground: var(--color-ink-950);
-	--accent-strong: var(--color-gilt-800);
+	/* Roles — fill / text-on-fill / tinted panel / high-contrast. */
+	--primary: var(--color-primary-500);
+	--primary-foreground: var(--color-neutral-950);
+	--primary-soft: var(--color-primary-100);
+	--primary-strong: var(--color-primary-800);
 
-	--positive: var(--color-verdant-700);
-	--positive-soft: var(--color-verdant-100);
-	--caution: var(--color-ember-700);
-	--caution-soft: var(--color-ember-100);
-	--negative: var(--color-oxblood-700);
-	--negative-soft: var(--color-oxblood-100);
+	--secondary: var(--color-secondary-600);
+	--secondary-foreground: var(--color-white);
+	--secondary-soft: var(--color-secondary-100);
+	--secondary-strong: var(--color-secondary-800);
+
+	--tertiary: var(--color-tertiary-600);
+	--tertiary-foreground: var(--color-white);
+	--tertiary-soft: var(--color-tertiary-100);
+	--tertiary-strong: var(--color-tertiary-800);
+
+	--success: var(--color-success-600);
+	--success-foreground: var(--color-white);
+	--success-soft: var(--color-success-100);
+	--success-strong: var(--color-success-800);
+
+	--info: var(--color-info-600);
+	--info-foreground: var(--color-white);
+	--info-soft: var(--color-info-100);
+	--info-strong: var(--color-info-800);
+
+	--warning: var(--color-warning-500);
+	--warning-foreground: var(--color-neutral-950);
+	--warning-soft: var(--color-warning-100);
+	--warning-strong: var(--color-warning-800);
+
+	--error: var(--color-error-600);
+	--error-foreground: var(--color-white);
+	--error-soft: var(--color-error-100);
+	--error-strong: var(--color-error-800);
 }
 
 [data-theme="dark"] {
 	color-scheme: dark;
 
-	--background: var(--color-ink-950);
-	--surface: var(--color-ink-900);
-	--foreground: var(--color-ink-100);
-	--muted: var(--color-ink-400);
-	--border: var(--color-ink-800);
-	--input: var(--color-ink-600);
-	--ring: var(--color-gilt-400);
+	--background: var(--color-neutral-950);
+	--surface: var(--color-neutral-900);
+	--foreground: var(--color-neutral-100);
+	--muted: var(--color-neutral-400);
+	--border: var(--color-neutral-800);
+	--input: var(--color-neutral-600);
+	--ring: var(--color-primary-400);
 
-	--accent: var(--color-gilt-400);
-	--accent-foreground: var(--color-ink-950);
-	--accent-strong: var(--color-gilt-300);
+	/* Fills lighten so they lift off the dark page, text-on-fill flips to neutral, panels drop to the 900 tint. */
+	--primary: var(--color-primary-400);
+	--primary-foreground: var(--color-neutral-950);
+	--primary-soft: var(--color-primary-900);
+	--primary-strong: var(--color-primary-300);
 
-	--positive: var(--color-verdant-300);
-	--positive-soft: var(--color-verdant-900);
-	--caution: var(--color-ember-300);
-	--caution-soft: var(--color-ember-900);
-	--negative: var(--color-oxblood-300);
-	--negative-soft: var(--color-oxblood-900);
+	--secondary: var(--color-secondary-400);
+	--secondary-foreground: var(--color-neutral-950);
+	--secondary-soft: var(--color-secondary-900);
+	--secondary-strong: var(--color-secondary-300);
+
+	--tertiary: var(--color-tertiary-400);
+	--tertiary-foreground: var(--color-neutral-950);
+	--tertiary-soft: var(--color-tertiary-900);
+	--tertiary-strong: var(--color-tertiary-300);
+
+	--success: var(--color-success-400);
+	--success-foreground: var(--color-neutral-950);
+	--success-soft: var(--color-success-900);
+	--success-strong: var(--color-success-300);
+
+	--info: var(--color-info-400);
+	--info-foreground: var(--color-neutral-950);
+	--info-soft: var(--color-info-900);
+	--info-strong: var(--color-info-300);
+
+	--warning: var(--color-warning-400);
+	--warning-foreground: var(--color-neutral-950);
+	--warning-soft: var(--color-warning-900);
+	--warning-strong: var(--color-warning-300);
+
+	--error: var(--color-error-400);
+	--error-foreground: var(--color-neutral-950);
+	--error-soft: var(--color-error-900);
+	--error-strong: var(--color-error-300);
 }
 
 @theme inline {
@@ -126,16 +254,40 @@
 	--color-input: var(--input);
 	--color-ring: var(--ring);
 
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-accent-strong: var(--accent-strong);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-primary-soft: var(--primary-soft);
+	--color-primary-strong: var(--primary-strong);
 
-	--color-positive: var(--positive);
-	--color-positive-soft: var(--positive-soft);
-	--color-caution: var(--caution);
-	--color-caution-soft: var(--caution-soft);
-	--color-negative: var(--negative);
-	--color-negative-soft: var(--negative-soft);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-secondary-soft: var(--secondary-soft);
+	--color-secondary-strong: var(--secondary-strong);
+
+	--color-tertiary: var(--tertiary);
+	--color-tertiary-foreground: var(--tertiary-foreground);
+	--color-tertiary-soft: var(--tertiary-soft);
+	--color-tertiary-strong: var(--tertiary-strong);
+
+	--color-success: var(--success);
+	--color-success-foreground: var(--success-foreground);
+	--color-success-soft: var(--success-soft);
+	--color-success-strong: var(--success-strong);
+
+	--color-info: var(--info);
+	--color-info-foreground: var(--info-foreground);
+	--color-info-soft: var(--info-soft);
+	--color-info-strong: var(--info-strong);
+
+	--color-warning: var(--warning);
+	--color-warning-foreground: var(--warning-foreground);
+	--color-warning-soft: var(--warning-soft);
+	--color-warning-strong: var(--warning-strong);
+
+	--color-error: var(--error);
+	--color-error-foreground: var(--error-foreground);
+	--color-error-soft: var(--error-soft);
+	--color-error-strong: var(--error-strong);
 }
 
 @layer base {
