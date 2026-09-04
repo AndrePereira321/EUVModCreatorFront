@@ -1,11 +1,13 @@
-interface AppMenuItemProps {
+export interface AppMenuItemProps {
+	id: string;
 	title: string;
+	path: string;
 }
 
 export default function AppMenuItem(props: AppMenuItemProps) {
 	return (
-		<div>
-			<span>{props.title}</span>
-		</div>
+		<li id={props.id}>
+			<a href={props.path}>{props.title}</a>
+		</li>
 	);
 }
