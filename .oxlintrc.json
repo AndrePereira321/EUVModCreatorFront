@@ -54,6 +54,10 @@
 		{
 			"files": ["*.config.ts", "vite.config.ts"],
 			"env": { "node": true }
+		},
+		{
+			"files": ["src/i18n/config.ts"],
+			"rules": { "import/no-named-as-default-member": "off" }
 		}
 	]
 }
