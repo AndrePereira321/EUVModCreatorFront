@@ -3,6 +3,13 @@
 React + TypeScript + Vite frontend for the EU5 mod creator. Workspace context — what the app is for, how Andre
 wants to work, commit message rules — is in the parent `../CLAUDE.md`, which loads alongside this file.
 
+## `.ai-support/` docs
+
+Frontend notes too long for this file — the reasoning behind the rules here. Convention: `../CLAUDE.md`.
+**Keep this index in sync.** A file added, renamed or deleted in `.ai-support/` is reflected here in the same change.
+
+- _(none yet)_
+
 ## Commands
 
 Run these from this folder, not the workspace root.
