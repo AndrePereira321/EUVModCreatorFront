@@ -5,8 +5,7 @@ wants to work, commit message rules — is in the parent `../CLAUDE.md`, which l
 
 ## `.ai-support/` docs
 
-Frontend notes too long for this file — the reasoning behind the rules here. Convention: `../CLAUDE.md`.
-**Keep this index in sync.** A file added, renamed or deleted in `.ai-support/` is reflected here in the same change.
+Frontend notes too long for this file. The convention, and the rule to keep this index in sync: `../CLAUDE.md`.
 
 - _(none yet)_
 
@@ -34,7 +33,7 @@ Organized **by type, not by feature.** The app is small and the EU5 domain objec
 
 ```
 src/
-├─ components/       <- UI components, grouped in subfolders by kind (layout/ holds the app shell)
+├─ components/       <- UI components, grouped in subfolders by kind (AppMenu/, common/)
 ├─ i18n/             <- i18next: config.ts init, i18next.d.ts key types, labels/ source strings
 ├─ styles/index.css  <- @import "tailwindcss"; @theme customizations go here
 └─ main.tsx          <- entry point: createRoot + <StrictMode> + <AppMain />
