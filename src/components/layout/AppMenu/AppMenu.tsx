@@ -1,6 +1,7 @@
 import { useId } from "react";
 import { useTranslation } from "react-i18next";
 
+import AppButton from "../../ui/AppButton/AppButton.tsx";
 import AppMenuItem, { type AppMenuItemProps } from "./AppMenuItem.tsx";
 
 export default function AppMenu() {
@@ -27,6 +28,10 @@ export default function AppMenu() {
 						<AppMenuItem key={menuItem.id} {...menuItem} />
 					))}
 				</ul>
+			</div>
+			<div className="ml-auto flex gap-2 px-2">
+				<AppButton text={t("auth.login")}></AppButton>
+				<AppButton text={t("auth.register")}></AppButton>
 			</div>
 		</nav>
 	);

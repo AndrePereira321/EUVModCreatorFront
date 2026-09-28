@@ -4,5 +4,9 @@
 	},
 	"generic": {
 		"home": "Home"
+	},
+	"auth": {
+		"login": "Login",
+		"register": "Register"
 	}
 }

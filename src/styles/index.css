@@ -24,8 +24,10 @@
  *   bg-primary               the solid fill.        Buttons, active tabs, filled badges.
  *   text-primary-foreground  text ON that fill.     Only ever used together with bg-primary.
  *   bg-primary-soft          a tinted panel.        Alert boxes, chips. Put text-primary-strong on it.
- *   text-primary-strong      the high-contrast one. Role-coloured text and icons on background / surface / soft,
- *                            and the hover state for the solid fill (hover:bg-primary-strong).
+ *   text-primary-strong      the high-contrast one. Role-coloured text and icons on background / surface / soft.
+ *                            Never the solid fill's hover on its own: primary and warning text drop to 2.7:1 / 2.1:1.
+ *                            Hover blends 25% toward it instead:
+ *                            hover:bg-[color-mix(in_oklab,var(--primary),var(--primary-strong)_25%)]
  *
  * "strong" means strongest against the page, so it is darker in light mode and lighter in dark mode.
  * Swap `primary` for any other role name and the four behave identically.
@@ -305,5 +307,11 @@
 	:focus-visible {
 		outline: 2px solid var(--ring);
 		outline-offset: 2px;
+	}
+
+	/* Tailwind v4 resets buttons to cursor: default; this restores the pointer. */
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
 	}
 }
