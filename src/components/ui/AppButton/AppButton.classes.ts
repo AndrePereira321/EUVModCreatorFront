@@ -14,7 +14,7 @@ import {
 import type { AppFill, AppRadius, AppSize, AppVariant } from "../../../types/styles.ts";
 
 export const BASE_CLASSES =
-	"inline-flex touch-manipulation items-center justify-center gap-2 border font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50";
+	"inline-flex max-w-full min-w-0 touch-manipulation items-center justify-center gap-2 border font-medium transition-colors active:translate-y-px disabled:pointer-events-none disabled:opacity-50";
 
 export const VARIANT_CLASSES: Record<AppVariant, string> = {
 	[APP_VARIANT_PRIMARY]:
@@ -32,7 +32,7 @@ export const VARIANT_CLASSES: Record<AppVariant, string> = {
 	[APP_VARIANT_ERROR]:
 		"[--tone:var(--error)] [--tone-foreground:var(--error-foreground)] [--tone-soft:var(--error-soft)] [--tone-strong:var(--error-strong)]",
 	[APP_VARIANT_NEUTRAL]:
-		"[--tone:var(--border)] [--tone-foreground:var(--foreground)] [--tone-soft:var(--color-neutral-200)] [--tone-strong:var(--foreground)] dark:[--tone-soft:var(--color-neutral-900)]",
+		"[--tone:var(--border)] [--tone-foreground:var(--foreground)] [--tone-soft:color-mix(in_oklab,var(--foreground)_8%,transparent)] [--tone-strong:var(--foreground)]",
 };
 
 export const FILL_CLASSES: Record<AppFill, string> = {
@@ -51,9 +51,9 @@ export const SIZE_CLASSES: Record<AppSize, string> = {
 };
 
 export const ICON_ONLY_SIZE_CLASSES: Record<AppSize, string> = {
-	[APP_SIZE_SM]: "size-8 text-base",
-	[APP_SIZE_MD]: "size-10 text-xl",
-	[APP_SIZE_LG]: "size-12 text-2xl",
+	[APP_SIZE_SM]: "size-8 shrink-0 text-base",
+	[APP_SIZE_MD]: "size-10 shrink-0 text-xl",
+	[APP_SIZE_LG]: "size-12 shrink-0 text-2xl",
 };
 
 export const RADIUS_CLASSES: Record<AppRadius, string> = {

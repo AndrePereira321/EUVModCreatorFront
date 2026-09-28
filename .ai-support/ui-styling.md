@@ -26,6 +26,12 @@ The variant map only **sets** four CSS variables on the element — `--tone`, `-
 `--tone-strong` — pointing at its role's theme tokens. The fill map only **reads** them (`bg-(--tone)`). That makes
 colours × fills cost M + N map entries instead of M × N, and a new fill works with every colour for free.
 
+`neutral` has no role tokens of its own: it points at `--border` and `--foreground`, and its soft tint is the
+foreground at 8% opacity. An opaque neutral step can't work, because neutral shares the page's hue: the old
+`neutral-900` soft was exactly dark `--surface`, so on a card a soft button had no fill and ghost hover did nothing. A
+see-through tint always differs from what is behind it. It is declared on the button, so `var(--foreground)` resolves
+to the current theme there; declared on `:root` it would keep the light value under a `data-theme="dark"` wrapper.
+
 ## Rules the pattern depends on
 
 - **Class names appear in full under `src/`.** Tailwind finds classes by reading the files in `src/` as plain text.
@@ -49,8 +55,34 @@ without flex the icon stacks above the text.
 
 **Icon-only.** Without `text`, the button takes `ICON_ONLY_SIZE_CLASSES` instead of `SIZE_CLASSES`: a square of the
 same height, with a font size that draws the icon at half its width (16, 20 and 24px), because alone it carries the
-whole meaning. The two maps are alternatives, never both, so one class per property still holds. Nothing forces an
-`aria-label`; a missing one shows up as `button-name` in Storybook's a11y panel.
+whole meaning. The two maps are alternatives, never both, so one class per property still holds.
+
+`AppButtonProps` is a union that makes the icon-only case explicit: without `text`, `aria-label` and `startIcon` are
+required and `endIcon` is not allowed. A nameless button, an empty square or a square with two icons fails the build,
+the same way a missing `Record` key does. A story that spreads `args` into an icon-only button sets
+`endIcon={undefined}`, since the args type can't rule out an end icon.
+
+## Long labels
+
+The label sits in a `truncate` span and the button is `max-w-full`, so a label longer than its container ends in an
+ellipsis instead of pushing the page sideways. Translations run about 30% longer than English. `min-w-0` does the same
+in a flex or grid row, where an item otherwise never gets narrower than its content. The icons and the icon-only
+squares are `shrink-0`, so the label gives way first. Truncation is the safety net; labels should still be short.
+
+Check it in the `LongLabel` story. Storybook's centered layout sizes the story to its content, so in `Playground` a
+long label never truncates.
+
+The span also protects against browser translation, which replaces text nodes with its own elements. As the span's only
+child, the label is written with `textContent`, which overwrites whatever translation put there. A bare text node next
+to the icons is one React keeps a reference to, and once translation has swapped it out, adding an icon in front of it
+or removing it crashes the render.
+
+## Pressed
+
+`active:translate-y-px` in `BASE_CLASSES` moves the button 1px down while pressed, the same for every fill. On a phone
+it is the only feedback a tap gets, because `hover:` in Tailwind v4 only applies on devices that can hover. It isn't a
+colour change: a mix deeper than the hover's 25% drops warning's text below 4.5:1 (40% gives 4.00:1).
+`transition-colors` doesn't cover `translate`, so the press shows instantly.
 
 ## When to move maps out of the component
 

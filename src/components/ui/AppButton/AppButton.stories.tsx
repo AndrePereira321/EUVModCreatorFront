@@ -107,11 +107,26 @@ export const IconOnly: Story = {
 							size={size}
 							fill={fill}
 							startIcon={GearIcon}
+							endIcon={undefined}
 							aria-label="Settings"
 						/>
 					))}
 				</div>
 			))}
+		</div>
+	),
+};
+
+export const LongLabel: Story = {
+	args: { text: "Download the finished mod and its install instructions" },
+	parameters: { controls: { exclude: ["startIcon", "endIcon"] } },
+	render: (args) => (
+		<div className="flex w-64 flex-col items-start gap-3">
+			<AppButton {...args} startIcon={DownloadSimpleIcon} />
+			<div className="flex w-full gap-2">
+				<AppButton {...args} />
+				<AppButton {...args} text={undefined} startIcon={XIcon} endIcon={undefined} aria-label="Close" />
+			</div>
 		</div>
 	),
 };

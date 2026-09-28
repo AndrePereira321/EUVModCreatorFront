@@ -8,7 +8,7 @@ colors:
   muted: "oklch(0.49 0.011 70)"
   border: "oklch(0.87 0.009 70)"
   input: "oklch(0.6 0.011 70)"
-  ring: "oklch(0.65 0.13 82)"
+  ring: "oklch(0.56 0.11 82)"
   primary: "oklch(0.74 0.14 82)"
   primary-foreground: "oklch(0.18 0.011 70)"
   primary-soft: "oklch(0.95 0.07 82)"
@@ -91,11 +91,13 @@ Buttons default to a 6px radius, with square, 4px and pill options. Borders are 
 
 `AppButton` takes `variant` (colour role, default primary), `fill` (solid, soft, outline or ghost; default solid),
 `size` (sm, md or lg; default md) and `radius` (default md). Solid hover blends 25% toward the role's strong tone;
-outline and ghost hover to the soft tint. Focus uses the global 2px ring.
+outline and ghost hover to the soft tint. Neutral's soft tint is the text colour at 8% opacity. Pressing moves the
+button 1px down. Focus uses the global 2px ring.
 
 Optional `startIcon` and `endIcon` take Phosphor icons, drawn at the text size in the text colour, 8px from the
 label. Without `text` the button is icon-only: a square of the size's height (32, 40 or 48px) with the icon at half
-its width, named by an `aria-label`. Ghost is the transparent option.
+its width, named by an `aria-label`. Ghost is the transparent option. A label wider than the button's container ends
+in an ellipsis.
 
 ## Do's and Don'ts
 

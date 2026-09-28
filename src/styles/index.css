@@ -161,7 +161,7 @@
 	--muted: var(--color-neutral-600);
 	--border: var(--color-neutral-300);
 	--input: var(--color-neutral-500);
-	--ring: var(--color-primary-600);
+	--ring: var(--color-primary-700);
 
 	/* Roles — fill / text-on-fill / tinted panel / high-contrast. */
 	--primary: var(--color-primary-500);
