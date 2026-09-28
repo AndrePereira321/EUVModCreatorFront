@@ -33,7 +33,10 @@ Organized **by type, not by feature.** The app is small and the EU5 domain objec
 
 ```
 src/
-├─ components/       <- UI components, grouped in subfolders by kind (AppMenu/, common/)
+├─ components/
+│  ├─ ui/            <- generic building blocks: Button, Modal, Input
+│  ├─ domain/        <- EU5-aware components, one subfolder per game concept (province/, country/)
+│  └─ layout/        <- the app shell: AppMain.tsx, AppMenu/
 ├─ i18n/             <- i18next: config.ts init, i18next.d.ts key types, labels/ source strings
 ├─ styles/index.css  <- @import "tailwindcss"; @theme customizations go here
 └─ main.tsx          <- entry point: createRoot + <StrictMode> + <AppMain />
@@ -41,6 +44,22 @@ src/
 
 Revisit when the first real mod-editing feature lands — that is the trigger to consider `src/features/<name>/`,
 not before.
+
+### Components
+
+- **`ui/`** knows nothing about EU5 and never calls `t()` — everything comes in through props. The test: could it
+  be dropped into another app unchanged? If not, it belongs in `domain/` or `layout/`.
+- **`domain/`** holds components that know EU5 concepts, one subfolder per concept. It doesn't exist yet — create
+  it with the first such component. A concept folder doesn't import from a sibling; combine them in `layout/`.
+- **`layout/`** is the frame around the content — menu, header, page shell — and, until routing exists, the
+  screens themselves. Once routes land, screens move to `src/pages/`.
+
+**Imports flow one way: `ui` ← `domain` ← `layout`.** `ui/` imports from neither, `domain/` only from `ui/`,
+`layout/` from both. `import/no-cycle` catches loops, not a wrong-direction import — that one is caught in review.
+
+**One file until it has pieces.** `Button.tsx` sits directly in `ui/`; a component gets its own folder once it
+has sub-components or a private hook, like `layout/AppMenu/`. **No `index.ts` barrels** — imports use explicit
+`.tsx` paths, and barrels are a common source of `import/no-cycle` errors.
 
 ## Internationalization (i18n)
 
@@ -110,7 +129,7 @@ fallback stack until that is decided.
 - `erasableSyntaxOnly` — no `enum` and no constructor parameter properties. Use `const` objects plus union types.
 - `noUnusedLocals` / `noUnusedParameters` — a single unused variable breaks `npm run build`.
 - `allowImportingTsExtensions` is on, and existing code writes the extension:
-  `import AppMain from "./components/AppMain.tsx"`. Follow that.
+  `import AppMain from "./components/layout/AppMain.tsx"`. Follow that.
 
 **Lint rules promoted to errors:** `react/exhaustive-deps`, `react/rules-of-hooks`, `react/jsx-key`,
 `react/no-danger`, `eqeqeq`, `import/no-cycle`, `import/no-duplicates`. `console.log` warns — only `console.warn`
