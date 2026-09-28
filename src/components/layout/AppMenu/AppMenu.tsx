@@ -31,7 +31,7 @@ export default function AppMenu() {
 			</div>
 			<div className="ml-auto flex gap-2 px-2">
 				<AppButton text={t("auth.login")}></AppButton>
-				<AppButton text={t("auth.register")}></AppButton>
+				<AppButton variant="secondary" text={t("auth.register")}></AppButton>
 			</div>
 		</nav>
 	);
