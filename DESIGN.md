@@ -93,6 +93,10 @@ Buttons default to a 6px radius, with square, 4px and pill options. Borders are 
 `size` (sm, md or lg; default md) and `radius` (default md). Solid hover blends 25% toward the role's strong tone;
 outline and ghost hover to the soft tint. Focus uses the global 2px ring.
 
+Optional `startIcon` and `endIcon` take Phosphor icons, drawn at the text size in the text colour, 8px from the
+label. Without `text` the button is icon-only: a square of the size's height (32, 40 or 48px) with the icon at half
+its width, named by an `aria-label`. Ghost is the transparent option.
+
 ## Do's and Don'ts
 
 ### Do:

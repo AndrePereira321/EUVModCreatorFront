@@ -8,8 +8,8 @@ wants to work, commit message rules — is in the parent `../CLAUDE.md`, which l
 Frontend notes too long for this file. The convention, and the rule to keep this index in sync: `../CLAUDE.md`.
 
 - [UI styling](.ai-support/ui-styling.md) — **read before adding a styled `ui/` component or a new style prop.**
-  How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, and why components take no
-  `className`.
+  How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, icons and icon-only buttons, and
+  why components take no `className`.
 - [Storybook](.ai-support/storybook.md) — **read before writing a story, touching `.storybook/`, or checking a
   component in the browser.** Story conventions, why the theme toolbar is hand-written, the a11y panel.
 

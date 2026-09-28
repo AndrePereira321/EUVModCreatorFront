@@ -28,13 +28,18 @@ pre-commit hook — typechecks them along with the stories. A new file in `.stor
   react-docgen can't follow `(typeof APP_VARIANTS)[number]` — without this the control is a text box and the type
   reads `unknown[number]`. `react-docgen-typescript` would resolve it, but it needs the TypeScript JS API, which TS 7
   no longer ships. Taking `options` from the array means a new value appears in Storybook without touching the story.
+- **Icon props get a select through `mapping`.** A control can only hold plain values, so the select lists the keys of
+  an `ICONS` object and `mapping` swaps the chosen key for its component:
+  `startIcon: { control: "select", options: Object.keys(ICONS), mapping: ICONS }`. Its `none: undefined` entry is the
+  select's way back to no icon.
 - **Props inherited from `ComponentProps<"button">` are invisible to react-docgen.** Give the ones worth toggling a
   control (`disabled: { control: "boolean" }`) and switch off the ones it guesses wrong (`type: { control: false }`).
 - **Callback props get `fn()` in `meta.args`**, so every call shows in the Actions panel.
 - **Which stories:** `Playground`, empty and driven by Controls; one every-value story per style prop, mapping over its
-  `APP_*` array (`VariantsByFill`, `Sizes`, `Radii`); one per state Controls don't show at a glance (`Disabled`). An
-  every-value story sets those props itself, so it hides them with `parameters: { controls: { exclude: [...] } }` —
-  left in, those controls do nothing.
+  `APP_*` array (`VariantsByFill`, `Sizes`, `Radii`); one per state Controls don't show at a glance (`Disabled`;
+  `Icons` for start, end and both at every size; `IconOnly` for every fill at every size). An every-value story sets
+  those props itself, so it hides them with `parameters: { controls: { exclude: [...] } }` — left in, those controls
+  do nothing.
 - **Sample text is plain English, not `t()`.** Stories aren't user-facing, and `ui/` components take resolved strings
   anyway. A `layout/` or `domain/` story that renders `t()` needs `import "../src/i18n/config.ts"` in `preview.tsx`
   first.

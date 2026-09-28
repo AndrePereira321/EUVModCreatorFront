@@ -14,7 +14,7 @@ import {
 import type { AppFill, AppRadius, AppSize, AppVariant } from "../../../types/styles.ts";
 
 export const BASE_CLASSES =
-	"touch-manipulation border font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50";
+	"inline-flex touch-manipulation items-center justify-center gap-2 border font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50";
 
 export const VARIANT_CLASSES: Record<AppVariant, string> = {
 	[APP_VARIANT_PRIMARY]:
@@ -48,6 +48,12 @@ export const SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "h-8 px-3 text-sm",
 	[APP_SIZE_MD]: "h-10 px-4 text-base",
 	[APP_SIZE_LG]: "h-12 px-6 text-lg",
+};
+
+export const ICON_ONLY_SIZE_CLASSES: Record<AppSize, string> = {
+	[APP_SIZE_SM]: "size-8 text-base",
+	[APP_SIZE_MD]: "size-10 text-xl",
+	[APP_SIZE_LG]: "size-12 text-2xl",
 };
 
 export const RADIUS_CLASSES: Record<AppRadius, string> = {
