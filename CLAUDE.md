@@ -7,7 +7,9 @@ wants to work, commit message rules — is in the parent `../CLAUDE.md`, which l
 
 Frontend notes too long for this file. The convention, and the rule to keep this index in sync: `../CLAUDE.md`.
 
-- _(none yet)_
+- [UI styling](.ai-support/ui-styling.md) — **read before adding a styled `ui/` component or a new style prop.**
+  How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, and why components take no
+  `className`.
 
 ## Commands
 
@@ -37,8 +39,10 @@ src/
 │  ├─ ui/            <- generic building blocks: Button, Modal, Input
 │  ├─ domain/        <- EU5-aware components, one subfolder per game concept (province/, country/)
 │  └─ layout/        <- the app shell: AppMain.tsx, AppMenu/
+├─ constants/        <- runtime values; types/ derives unions from them, never the reverse
 ├─ i18n/             <- i18next: config.ts init, i18next.d.ts key types, labels/ source strings
 ├─ styles/index.css  <- @import "tailwindcss"; @theme customizations go here
+├─ types/            <- types only, always imported with `import type`
 └─ main.tsx          <- entry point: createRoot + <StrictMode> + <AppMain />
 ```
 
@@ -96,8 +100,9 @@ or their packages — config lives in `.oxlintrc.json` and `.oxfmtrc.json`.
 **Tabs, not spaces.** `printWidth` is 120 and `oxfmt` sorts imports. Match this when writing code by hand.
 
 **Tailwind v4, with no config file.** Wired through the `@tailwindcss/vite` plugin in `vite.config.ts` plus
-`@import "tailwindcss"` in `src/styles/index.css`. There is deliberately **no `tailwind.config.js` and no PostCSS
-config** — do not create them. Customize the theme with `@theme { ... }` in CSS.
+`@import "tailwindcss" source("..")` in `src/styles/index.css`. There is deliberately **no `tailwind.config.js` and
+no PostCSS config** — do not create them. Customize the theme with `@theme { ... }` in CSS. `source("..")` limits
+class scanning to `src/`: a class written only outside it (docs, `index.html`) produces no CSS.
 
 **Theme tokens.** `src/styles/index.css` replaces Tailwind's stock palette (`--color-*: initial`) with eight ramps
 named after their role — `neutral`, `primary` (gold), `secondary` (lapis blue), `tertiary` (plum), `success`
@@ -112,12 +117,16 @@ Neutrals: `bg-background`, `bg-surface`, `text-foreground`, `text-muted`, `borde
 
 Each of the seven roles has the same four theme-aware tokens — swap the role name and they behave identically:
 
-| token                     | use                                                                       |
-| ------------------------- | ------------------------------------------------------------------------- |
-| `bg-primary`              | the solid fill — buttons, active tabs, filled badges                      |
-| `text-primary-foreground` | text on that fill; only ever paired with `bg-primary`                     |
-| `bg-primary-soft`         | tinted panel — alerts, chips; put `text-primary-strong` on it             |
-| `text-primary-strong`     | role-coloured text/icons on background, surface or soft; also `hover:bg-` |
+| token                     | use                                                           |
+| ------------------------- | ------------------------------------------------------------- |
+| `bg-primary`              | the solid fill — buttons, active tabs, filled badges          |
+| `text-primary-foreground` | text on that fill; only ever paired with `bg-primary`         |
+| `bg-primary-soft`         | tinted panel — alerts, chips; put `text-primary-strong` on it |
+| `text-primary-strong`     | role-coloured text/icons on background, surface or soft       |
+
+**A solid fill's hover is never `hover:bg-primary-strong`** — on `primary` and `warning`, whose foreground is dark,
+that drops the text to 2.7:1 and 2.1:1. Blend 25% toward `-strong` instead:
+`hover:bg-[color-mix(in_oklab,var(--primary),var(--primary-strong)_25%)]`.
 
 `-strong` means strongest against the page: darker in light mode, lighter in dark mode. Dark mode is
 `data-theme="dark"` on an ancestor, light is the default. Web fonts are not set up yet; `--font-display` is a
