@@ -10,19 +10,23 @@ Frontend notes too long for this file. The convention, and the rule to keep this
 - [UI styling](.ai-support/ui-styling.md) — **read before adding a styled `ui/` component or a new style prop.**
   How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, and why components take no
   `className`.
+- [Storybook](.ai-support/storybook.md) — **read before writing a story, touching `.storybook/`, or checking a
+  component in the browser.** Story conventions, why the theme toolbar is hand-written, the a11y panel.
 
 ## Commands
 
 Run these from this folder, not the workspace root.
 
 ```bash
-npm install          # node_modules is gitignored and may be absent
-npm run dev          # vite dev server
-npm run build        # tsc -b && vite build — typechecks project references, then builds
-npm run lint         # oxlint
-npm run format       # oxfmt (writes in place)
+npm install              # node_modules is gitignored and may be absent
+npm run dev              # vite dev server
+npm run build            # tsc -b && vite build — typechecks project references, then builds
+npm run lint             # oxlint
+npm run format           # oxfmt (writes in place)
 npm run format:check
-npm run preview      # serve the production build locally
+npm run preview          # serve the production build locally
+npm run storybook        # component workshop on :6006
+npm run build-storybook  # static Storybook into storybook-static/
 ```
 
 No test framework is configured. Don't assume `npm test` exists — offer to set one up rather than inventing a
@@ -64,6 +68,9 @@ not before.
 **One file until it has pieces.** `Button.tsx` sits directly in `ui/`; a component gets its own folder once it
 has sub-components or a private hook, like `layout/AppMenu/`. **No `index.ts` barrels** — imports use explicit
 `.tsx` paths, and barrels are a common source of `import/no-cycle` errors.
+
+**Every `ui/` component has a story** — `X.stories.tsx` beside `X.tsx`, written or updated in the same change as the
+component. A story doesn't count as a piece: `Badge.tsx` and `Badge.stories.tsx` both sit directly in `ui/`.
 
 ## Internationalization (i18n)
 
