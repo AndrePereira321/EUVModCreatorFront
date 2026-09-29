@@ -107,7 +107,6 @@ export const IconOnly: Story = {
 							size={size}
 							fill={fill}
 							startIcon={GearIcon}
-							endIcon={undefined}
 							aria-label="Settings"
 						/>
 					))}
@@ -125,7 +124,7 @@ export const LongLabel: Story = {
 			<AppButton {...args} startIcon={DownloadSimpleIcon} />
 			<div className="flex w-full gap-2">
 				<AppButton {...args} />
-				<AppButton {...args} text={undefined} startIcon={XIcon} endIcon={undefined} aria-label="Close" />
+				<AppButton {...args} text={undefined} startIcon={XIcon} aria-label="Close" />
 			</div>
 		</div>
 	),

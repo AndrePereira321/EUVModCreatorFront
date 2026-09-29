@@ -16,18 +16,15 @@ import {
 	VARIANT_CLASSES,
 } from "./AppButton.classes.ts";
 
-interface AppButtonBaseProps extends Omit<ComponentProps<"button">, "children" | "className"> {
+export interface AppButtonProps extends Omit<ComponentProps<"button">, "children" | "className"> {
+	text?: string;
 	variant?: AppVariant;
 	fill?: AppFill;
 	size?: AppSize;
 	radius?: AppRadius;
+	startIcon?: Icon;
+	endIcon?: Icon;
 }
-
-export type AppButtonProps = AppButtonBaseProps &
-	(
-		| { text: string; startIcon?: Icon; endIcon?: Icon }
-		| { text?: undefined; "aria-label": string; startIcon: Icon; endIcon?: undefined }
-	);
 
 export default function AppButton({
 	text,

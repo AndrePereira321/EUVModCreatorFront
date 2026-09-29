@@ -57,10 +57,9 @@ without flex the icon stacks above the text.
 same height, with a font size that draws the icon at half its width (16, 20 and 24px), because alone it carries the
 whole meaning. The two maps are alternatives, never both, so one class per property still holds.
 
-`AppButtonProps` is a union that makes the icon-only case explicit: without `text`, `aria-label` and `startIcon` are
-required and `endIcon` is not allowed. A nameless button, an empty square or a square with two icons fails the build,
-the same way a missing `Record` key does. A story that spreads `args` into an icon-only button sets
-`endIcon={undefined}`, since the args type can't rule out an end icon.
+`AppButtonProps` is one flat interface, so the types don't enforce the icon-only case. An icon-only button needs an
+`aria-label` and a `startIcon` — without the label a screen reader announces a nameless button, which Storybook's
+a11y panel flags.
 
 ## Long labels
 
