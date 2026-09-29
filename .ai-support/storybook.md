@@ -1,6 +1,6 @@
 # Storybook — the component workshop
 
-Storybook 10 renders each component on its own, outside the app: a canvas with **Controls** for every prop, a
+Storybook 11 (alpha) renders each component on its own, outside the app: a canvas with **Controls** for every prop, a
 **Docs** page per component, an **Accessibility** check, and a light/dark toggle. `npm run storybook` serves it on
 port 6006.
 
@@ -92,5 +92,9 @@ Screenshots from the Playwright MCP land in the workspace root or its `.playwrig
   Playwright browsers, and no test framework is chosen yet.
 - **Storybook MCP.** `@storybook/addon-mcp`, or Storybook's own Claude Code plugin, gives an agent tools to list
   components, read their docs and preview stories. It only answers while the dev server runs.
-- **Upgrades.** `npx storybook upgrade` moves `storybook` and every `@storybook/*` package together. Don't bump them
-  one at a time — they're released as a set and expect the same version.
+- **Upgrades.** `npx storybook@next upgrade` moves `storybook` and every `@storybook/*` package together. Don't bump
+  them one at a time — they're released as a set and expect the same version. We're on an 11.0 alpha, taken early
+  because its `addon-vitest` supports Vitest 5, so the versions are **pinned exactly**: the upgrade writes `^`
+  ranges, and a `^` on an alpha lets `npm install` pull the next alpha. Re-pin after upgrading. Automigrations run
+  under `--yes`, and 11.0.0-alpha.1 offered one that adds `addon-mcp` — pass `--skip-automigrations` unless we want
+  what it adds.
