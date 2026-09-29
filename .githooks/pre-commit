@@ -20,4 +20,10 @@ if ! npm run --silent build; then
 	exit 1
 fi
 
-echo "pre-commit: format, lint and build all passed."
+if ! npm run --silent test; then
+	echo ""
+	echo "pre-commit: tests failed. Fix them and commit again."
+	exit 1
+fi
+
+echo "pre-commit: format, lint, build and tests all passed."

@@ -27,10 +27,14 @@ npm run format:check
 npm run preview          # serve the production build locally
 npm run storybook        # component workshop on :6006
 npm run build-storybook  # static Storybook into storybook-static/
+npm test                 # vitest run: unit, browser and storybook projects, once
+npm run test:watch       # vitest in watch mode
+npx vitest run --project unit      # one project: unit | browser | storybook
+npx playwright install chromium    # once per clone, and after bumping playwright — npm install doesn't fetch it
 ```
 
-No test framework is configured. Don't assume `npm test` exists — offer to set one up rather than inventing a
-command.
+**Tests sit beside the code:** `X.test.ts` is logic and runs in Node, `X.test.tsx` renders a component and runs in
+headless Chromium. Every story is also a test that fails on an axe violation.
 
 ## Source layout
 
@@ -153,8 +157,8 @@ and `console.error` are allowed.
 
 ## Pre-commit hook
 
-`.githooks/pre-commit` runs `format:check`, then `lint`, then `build` — cheapest first — and blocks the commit if
-any of them fails. `core.hooksPath` points git at that tracked directory, and the `prepare` script sets it during
+`.githooks/pre-commit` runs `format:check`, then `lint`, then `build`, then `test` — cheapest first — and blocks the
+commit if any of them fails. `core.hooksPath` points git at that tracked directory, and the `prepare` script sets it during
 `npm install`, so a fresh clone is covered after the first install.
 
 The hook only checks — it never rewrites staged files. When it stops you on formatting, run `npm run format`,

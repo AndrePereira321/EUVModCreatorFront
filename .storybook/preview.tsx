@@ -6,6 +6,7 @@ const preview: Preview = {
 	tags: ["autodocs"],
 	parameters: {
 		layout: "centered",
+		a11y: { test: "error" },
 	},
 	globalTypes: {
 		theme: {

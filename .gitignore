@@ -23,3 +23,7 @@ storybook-static
 *.njsproj
 *.sln
 *.sw?
+
+# Vitest
+.vitest
+coverage
