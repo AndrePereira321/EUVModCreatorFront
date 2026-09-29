@@ -23,7 +23,8 @@ Run these from this folder, not the workspace root.
 ```bash
 npm install              # node_modules is gitignored and may be absent
 npm run dev              # vite dev server
-npm run build            # tsc -b && vite build — typechecks project references, then builds
+npm run build            # tsc -b && vite build — typechecks project references, then builds; no tests
+npm run typecheck        # tsc -b only
 npm run lint             # oxlint
 npm run format           # oxfmt (writes in place)
 npm run format:check
@@ -158,11 +159,22 @@ fallback stack until that is decided.
 `react/no-danger`, `eqeqeq`, `import/no-cycle`, `import/no-duplicates`. `console.log` warns — only `console.warn`
 and `console.error` are allowed.
 
-## Pre-commit hook
+## Git hooks and CI
 
-`.githooks/pre-commit` runs `format:check`, then `lint`, then `build`, then `test` — cheapest first — and blocks the
-commit if any of them fails. `core.hooksPath` points git at that tracked directory, and the `prepare` script sets it during
-`npm install`, so a fresh clone is covered after the first install.
+Cheap checks run often, the full check runs before code leaves the machine, and CI is the one gate that can't be
+skipped.
 
-The hook only checks — it never rewrites staged files. When it stops you on formatting, run `npm run format`,
-re-stage, and commit again. Fix what fails instead of reaching for `--no-verify`.
+| when                           | runs                                                        | where                      |
+| ------------------------------ | ----------------------------------------------------------- | -------------------------- |
+| every commit                   | `format:check` → `lint` → `typecheck` → `test`              | `.githooks/pre-commit`     |
+| every push                     | `build` (typecheck + bundle) → `test`                       | `.githooks/pre-push`       |
+| push to `master`, pull request | `npm ci`, Chromium, `format:check`, `lint`, `build`, `test` | `.github/workflows/ci.yml` |
+
+`npm run build` alone runs no tests. `core.hooksPath` points git at the tracked `.githooks/`, and the `prepare` script
+sets it during `npm install`, so a fresh clone is covered after the first install. A new hook file needs the
+executable bit in git (`git add --chmod=+x .githooks/<hook>`) or it won't run on Linux or macOS.
+
+The hooks only check — they never rewrite staged files. When one stops you on formatting, run `npm run format`,
+re-stage, and commit again. Fix what fails instead of reaching for `--no-verify`. If the pre-commit gets slow as tests
+grow, switch its test step to the staged files' tests only (`vitest related --run <files>`) and leave the full suite
+to pre-push and CI.

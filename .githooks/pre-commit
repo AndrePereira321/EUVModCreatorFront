@@ -14,9 +14,9 @@ if ! npm run --silent lint; then
 	exit 1
 fi
 
-if ! npm run --silent build; then
+if ! npm run --silent typecheck; then
 	echo ""
-	echo "pre-commit: typecheck or build failed. Fix it and commit again."
+	echo "pre-commit: typecheck failed. Fix it and commit again."
 	exit 1
 fi
 
@@ -26,4 +26,4 @@ if ! npm run --silent test; then
 	exit 1
 fi
 
-echo "pre-commit: format, lint, build and tests all passed."
+echo "pre-commit: format, lint, typecheck and tests all passed."

@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs before every push, from the repo root. Bypass with --no-verify (don't).
+# The full check before code leaves this machine: the production build, then every test.
+
+if ! npm run --silent build; then
+	echo ""
+	echo "pre-push: build failed. Fix it and push again."
+	exit 1
+fi
+
+if ! npm run --silent test; then
+	echo ""
+	echo "pre-push: tests failed. Fix them and push again."
+	exit 1
+fi
+
+echo "pre-push: build and tests passed."
