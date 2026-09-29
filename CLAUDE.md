@@ -15,6 +15,8 @@ Frontend notes too long for this file. The convention, and the rule to keep this
 - [UI styling](.ai-support/ui-styling.md) — **read before adding a styled `ui/` component or a new style prop.**
   How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, icons and icon-only buttons, and
   why components take no `className`.
+- [Dependencies](.ai-support/dependencies.md) — **read before adding, upgrading or pinning a dependency.** The
+  packages held off `^` ranges, why each one is pinned, and how to tell when it can be unpinned.
 
 ## Commands
 
