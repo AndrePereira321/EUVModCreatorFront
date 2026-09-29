@@ -12,7 +12,7 @@ constants/styles/<prop>.ts      APP_FILL_SOLID … + APP_FILLS array      one fi
 types/styles.ts                 AppFill = (typeof APP_FILLS)[number]    all style types, one file
 components/ui/X/X.classes.ts    one Record<AppFill, string> map per prop
 components/ui/X/X.tsx           props, defaults, clsx(...) of the maps, JSX
-components/ui/X/X.stories.tsx   control + every-value story per prop    see storybook.md
+components/ui/X/X.stories.tsx   control + every-value story per prop    see the front-storybook skill
 ```
 
 `Record<AppFill, string>` makes a missing key a build error, so adding a value to `APP_FILLS` fails the build until

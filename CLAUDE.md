@@ -3,6 +3,11 @@
 React + TypeScript + Vite frontend for the EU5 mod creator. Workspace context — what the app is for, how Andre
 wants to work, commit message rules — is in the parent `../CLAUDE.md`, which loads alongside this file.
 
+## Skills
+
+Procedures — writing stories, writing tests — are the `front-*` skills. They live in the workspace, not this repo;
+`../CLAUDE.md` lists them and holds the convention.
+
 ## `.ai-support/` docs
 
 Frontend notes too long for this file. The convention, and the rule to keep this index in sync: `../CLAUDE.md`.
@@ -10,8 +15,6 @@ Frontend notes too long for this file. The convention, and the rule to keep this
 - [UI styling](.ai-support/ui-styling.md) — **read before adding a styled `ui/` component or a new style prop.**
   How `variant` / `fill` / `size` / `radius` are built, the `--tone-*` variables, icons and icon-only buttons, and
   why components take no `className`.
-- [Storybook](.ai-support/storybook.md) — **read before writing a story, touching `.storybook/`, or checking a
-  component in the browser.** Story conventions, why the theme toolbar is hand-written, the a11y panel.
 
 ## Commands
 
@@ -34,7 +37,7 @@ npx playwright install chromium    # once per clone, and after bumping playwrigh
 ```
 
 **Tests sit beside the code:** `X.test.ts` is logic and runs in Node, `X.test.tsx` renders a component and runs in
-headless Chromium. Every story is also a test that fails on an axe violation.
+headless Chromium. Every story is also a test that fails on an axe violation. Details: the `front-testing` skill.
 
 ## Source layout
 
