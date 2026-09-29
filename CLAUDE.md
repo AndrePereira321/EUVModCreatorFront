@@ -114,6 +114,11 @@ or their packages — config lives in `.oxlintrc.json` and `.oxfmtrc.json`.
 
 **Tabs, not spaces.** `printWidth` is 120 and `oxfmt` sorts imports. Match this when writing code by hand.
 
+**`@emnapi/core` and `@emnapi/runtime` are devDependencies nothing imports — keep them.** They're dependencies of
+Tailwind's WebAssembly fallback, and npm on Windows drops them from `package-lock.json` on every install; CI's
+`npm ci` on Linux then fails with `Missing: @emnapi/core@… from lock file`. Listing them directly keeps them in the
+lockfile. If CI fails that way for another package, the same fix applies.
+
 **Tailwind v4, with no config file.** Wired through the `@tailwindcss/vite` plugin in `vite.config.ts` plus
 `@import "tailwindcss" source("..")` in `src/styles/index.css`. There is deliberately **no `tailwind.config.js` and
 no PostCSS config** — do not create them. Customize the theme with `@theme { ... }` in CSS. `source("..")` limits
