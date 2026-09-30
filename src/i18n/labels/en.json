@@ -3,7 +3,10 @@
 		"title": "EUV Mod Creator"
 	},
 	"generic": {
-		"home": "Home"
+		"home": "Home",
+		"confirm": "Confirm",
+		"cancel": "Cancel",
+		"close": "Close"
 	},
 	"auth": {
 		"login": "Login",
