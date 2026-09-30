@@ -10,7 +10,7 @@ export const FIELD_VALID_CLASSES =
 export const FIELD_INVALID_CLASSES = "border-error [--ring:var(--error)]";
 
 export const INPUT_CLASSES =
-	"min-w-0 flex-1 self-stretch bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed";
+	"min-w-0 flex-1 self-stretch bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:appearance-none";
 
 export const SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "h-8 gap-1.5 px-2.5 text-small",
@@ -26,10 +26,10 @@ export const ICON_SIZE_CLASSES: Record<AppSize, string> = {
 
 export const ADORNMENT_CLASSES = "shrink-0 text-muted";
 
-export const CLEAR_BUTTON_CLASSES =
+export const FIELD_BUTTON_CLASSES =
 	"inline-flex shrink-0 items-center justify-center rounded-sm text-muted transition-colors hover:bg-[color-mix(in_oklab,var(--foreground)_8%,transparent)] hover:text-foreground";
 
-export const CLEAR_BUTTON_SIZE_CLASSES: Record<AppSize, string> = {
+export const FIELD_BUTTON_SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "size-6",
 	[APP_SIZE_MD]: "size-7",
 	[APP_SIZE_LG]: "size-8",

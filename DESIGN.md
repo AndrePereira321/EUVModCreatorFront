@@ -158,9 +158,15 @@ in a row. The value is 14px (sm), 16px (md) or 18px (lg), at weight 400. Placeho
 global 2px one, drawn around the whole field.
 
 Inside the field, in order: an optional `startIcon`, the value, a muted `suffix` (a unit such as "%"), an optional
-`endIcon`, a spinner while `isLoading`, and, with `isClearable` and a value, a ghost × button named by a "Clear"
-tooltip that empties the field and puts focus back in it. Icons are muted, 16px on sm and md and 20px on lg; the
-spinner turns only when motion is allowed. Clicking anywhere in the field outside the value focuses the value.
+`endIcon`, a spinner while `isLoading`, with `isClearable` and a value, a ghost × button named by a "Clear"
+tooltip that empties the field and puts focus back in it, and on a password field a ghost eye button named "Show
+password", which shows the password and becomes a crossed-out eye named "Hide password". Icons are muted, 16px on sm
+and md and 20px on lg; the spinner turns only when motion is allowed. Clicking anywhere in the field outside the value
+focuses the value.
+
+`type` is text, email, tel, url, search or password. It changes the phone keyboard and the browser's autofill, not
+the look: every type draws the same field. The browser's own buttons are hidden, the × in a search field and Edge's
+eye in a password field, so only the field's own buttons show.
 
 With `maxLength`, the footer shows the count, as "12/40", at its end, muted, turning warning-strong from 90% of the
 limit. With an `error`, the border and the focus ring turn to the error colour, and the message sits at the footer's

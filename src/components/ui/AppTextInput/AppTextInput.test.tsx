@@ -3,9 +3,18 @@ import { expect, test, vi } from "vitest";
 import { render } from "vitest-browser-react";
 import { userEvent } from "vitest/browser";
 
+import {
+	APP_TEXT_INPUT_TYPE_EMAIL,
+	APP_TEXT_INPUT_TYPE_PASSWORD,
+	APP_TEXT_INPUT_TYPE_SEARCH,
+	APP_TEXT_INPUT_TYPE_TEL,
+	APP_TEXT_INPUT_TYPE_TEXT,
+	APP_TEXT_INPUT_TYPE_URL,
+} from "../../../constants/inputs.ts";
+
 import "../../../styles/index.css";
 import { DefaultLabelsContext } from "../DefaultLabelsContext.ts";
-import AppTextInput, { type AppTextInputProps } from "./AppTextInput.tsx";
+import AppTextInput, { type AppTextInputBaseProps, type AppTextInputTypeProps } from "./AppTextInput.tsx";
 
 const DEFAULT_LABELS = {
 	confirm: "Confirm",
@@ -14,13 +23,17 @@ const DEFAULT_LABELS = {
 	optional: "(optional)",
 	clear: "Clear",
 	loading: "Loading…",
+	showPassword: "Show password",
+	hidePassword: "Hide password",
 };
+
+type Overrides = Partial<AppTextInputBaseProps> & AppTextInputTypeProps;
 
 function WithLabels({ children }: { children: ReactNode }) {
 	return <DefaultLabelsContext value={DEFAULT_LABELS}>{children}</DefaultLabelsContext>;
 }
 
-function StatefulInput({ value: initialValue = "", onChange, ...props }: Partial<AppTextInputProps>) {
+function StatefulInput({ value: initialValue = "", onChange, ...props }: Overrides) {
 	const [value, setValue] = useState(initialValue);
 
 	return (
@@ -37,7 +50,7 @@ function StatefulInput({ value: initialValue = "", onChange, ...props }: Partial
 	);
 }
 
-async function setup(overrides: Partial<AppTextInputProps> = {}) {
+async function setup(overrides: Overrides = {}) {
 	const onChange = vi.fn();
 	const screen = await render(<StatefulInput onChange={onChange} {...overrides} />, { wrapper: WithLabels });
 	return { screen, onChange, input: screen.getByRole("textbox") };
@@ -188,4 +201,98 @@ test("uses the labels it is given", async () => {
 
 	await expect.element(screen.getByRole("textbox", { name: "Mod name (not required)" })).toBeVisible();
 	await expect.element(screen.getByRole("button", { name: "Empty the field" })).toBeVisible();
+});
+
+test.each([APP_TEXT_INPUT_TYPE_EMAIL, APP_TEXT_INPUT_TYPE_TEL, APP_TEXT_INPUT_TYPE_URL] as const)(
+	"sets type=%s, so phones open the matching keyboard",
+	async (type) => {
+		const { input } = await setup({ type });
+
+		await expect.element(input).toHaveAttribute("type", type);
+	},
+);
+
+test("is announced as a search box when it searches", async () => {
+	const { screen } = await setup({ type: APP_TEXT_INPUT_TYPE_SEARCH, label: "Search your mods" });
+
+	await expect.element(screen.getByRole("searchbox", { name: "Search your mods" })).toBeVisible();
+});
+
+test.each([
+	[APP_TEXT_INPUT_TYPE_TEXT, "off"],
+	[APP_TEXT_INPUT_TYPE_SEARCH, "off"],
+	[APP_TEXT_INPUT_TYPE_EMAIL, "email"],
+	[APP_TEXT_INPUT_TYPE_TEL, "tel"],
+	[APP_TEXT_INPUT_TYPE_URL, "url"],
+] as const)("type=%s asks the browser for %s autofill by default", async (type, autoComplete) => {
+	const { screen } = await setup({ type, label: "Contact" });
+
+	await expect.element(screen.getByLabelText("Contact")).toHaveAttribute("autocomplete", autoComplete);
+});
+
+test.each([
+	[APP_TEXT_INPUT_TYPE_EMAIL, "off"],
+	[APP_TEXT_INPUT_TYPE_TEXT, "username"],
+] as const)("type=%s takes the autofill it is given: %s", async (type, autoComplete) => {
+	const { screen } = await setup({ type, autoComplete, label: "Contact" });
+
+	await expect.element(screen.getByLabelText("Contact")).toHaveAttribute("autocomplete", autoComplete);
+});
+
+test("hides a password until the player asks to see it", async () => {
+	const { screen } = await setup({
+		type: APP_TEXT_INPUT_TYPE_PASSWORD,
+		autoComplete: "current-password",
+		label: "Password",
+		value: "castile-aragon-1469",
+	});
+	const password = screen.getByLabelText("Password");
+	await expect.element(password).toHaveAttribute("type", "password");
+
+	await screen.getByRole("button", { name: "Show password" }).click();
+
+	await expect.element(password).toHaveAttribute("type", "text");
+
+	await screen.getByRole("button", { name: "Hide password" }).click();
+
+	await expect.element(password).toHaveAttribute("type", "password");
+});
+
+test("keeps a shown password away from spellcheck, autocorrect and capitalisation", async () => {
+	const { screen } = await setup({
+		type: APP_TEXT_INPUT_TYPE_PASSWORD,
+		autoComplete: "new-password",
+		label: "Password",
+	});
+
+	await screen.getByRole("button", { name: "Show password" }).click();
+
+	const password = screen.getByLabelText("Password");
+	await expect.element(password).toHaveAttribute("spellcheck", "false");
+	await expect.element(password).toHaveAttribute("autocorrect", "off");
+	await expect.element(password).toHaveAttribute("autocapitalize", "none");
+});
+
+test("offers no way to show the password of a disabled field", async () => {
+	const { screen } = await setup({
+		type: APP_TEXT_INPUT_TYPE_PASSWORD,
+		autoComplete: "current-password",
+		value: "castile-aragon-1469",
+		disabled: true,
+	});
+
+	await expect.element(screen.getByRole("button", { name: "Show password" })).not.toBeInTheDocument();
+});
+
+test("uses the password labels it is given", async () => {
+	const { screen } = await setup({
+		type: APP_TEXT_INPUT_TYPE_PASSWORD,
+		autoComplete: "current-password",
+		showPasswordLabel: "Reveal",
+		hidePasswordLabel: "Conceal",
+	});
+
+	await screen.getByRole("button", { name: "Reveal" }).click();
+
+	await expect.element(screen.getByRole("button", { name: "Conceal" })).toBeVisible();
 });

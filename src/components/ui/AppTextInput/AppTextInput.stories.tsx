@@ -1,16 +1,28 @@
 import { GlobeIcon, LinkIcon, LockIcon, MagnifyingGlassIcon, TagIcon, UserIcon } from "@phosphor-icons/react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { useArgs } from "storybook/preview-api";
 import { fn } from "storybook/test";
 
+import {
+	APP_TEXT_INPUT_TYPE_EMAIL,
+	APP_TEXT_INPUT_TYPE_PASSWORD,
+	APP_TEXT_INPUT_TYPE_SEARCH,
+	APP_TEXT_INPUT_TYPE_TEL,
+	APP_TEXT_INPUT_TYPE_URL,
+	APP_TEXT_INPUT_TYPES,
+} from "../../../constants/inputs.ts";
 import { APP_FILL_OUTLINE } from "../../../constants/styles/fill.ts";
 import { APP_RADII } from "../../../constants/styles/radius.ts";
 import { APP_SIZES } from "../../../constants/styles/size.ts";
 import { APP_VARIANT_NEUTRAL } from "../../../constants/styles/variant.ts";
 import AppButton from "../AppButton/AppButton.tsx";
 import { DefaultLabelsContext } from "../DefaultLabelsContext.ts";
-import AppTextInput, { type AppTextInputProps } from "./AppTextInput.tsx";
+import AppTextInput, {
+	type AppTextInputBaseProps,
+	type AppTextInputProps,
+	type AppTextInputTypeProps,
+} from "./AppTextInput.tsx";
 
 const ICONS = { none: undefined, TagIcon, MagnifyingGlassIcon, UserIcon, GlobeIcon, LockIcon, LinkIcon };
 
@@ -21,6 +33,8 @@ const DEFAULT_LABELS = {
 	optional: "(optional)",
 	clear: "Clear",
 	loading: "Loading…",
+	showPassword: "Show password",
+	hidePassword: "Hide password",
 };
 
 function StatefulTextInput({ value: initialValue, onChange, ...props }: AppTextInputProps) {
@@ -38,20 +52,20 @@ function StatefulTextInput({ value: initialValue, onChange, ...props }: AppTextI
 	);
 }
 
+const withDefaultLabels: Decorator = (Story) => (
+	<DefaultLabelsContext value={DEFAULT_LABELS}>
+		<Story />
+	</DefaultLabelsContext>
+);
+
 const meta = {
 	component: AppTextInput,
-	decorators: [
-		(Story) => (
-			<DefaultLabelsContext value={DEFAULT_LABELS}>
-				<Story />
-			</DefaultLabelsContext>
-		),
-	],
+	decorators: [withDefaultLabels],
 	parameters: {
 		docs: {
 			description: {
 				component:
-					"A one-line text field with its label, a description behind an info icon, and a footer for the error and the character count. Everything it shows comes in through props; the few words it adds itself come from `DefaultLabels`.",
+					"A one-line text field with its label, a description behind an info icon, and a footer for the error and the character count. Everything it shows comes in through props; the few words it adds itself come from `DefaultLabels`. It never validates: the form decides what's wrong and passes the message in `error`.",
 			},
 		},
 	},
@@ -62,6 +76,8 @@ const meta = {
 		onChange: fn(),
 	},
 	argTypes: {
+		type: { control: "select", options: APP_TEXT_INPUT_TYPES, table: { type: { summary: "AppTextInputType" } } },
+		autoComplete: { control: "text" },
 		size: { control: "inline-radio", options: APP_SIZES, table: { type: { summary: "AppSize" } } },
 		radius: { control: "inline-radio", options: APP_RADII, table: { type: { summary: "AppRadius" } } },
 		startIcon: { control: "select", options: Object.keys(ICONS), mapping: ICONS },
@@ -101,6 +117,7 @@ export const ProfileForm: Story = {
 	render: (args) => (
 		<form
 			className="flex w-[34rem] max-w-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 shadow-sm"
+			noValidate
 			onSubmit={(event) => event.preventDefault()}
 		>
 			<div className="flex flex-col gap-1">
@@ -120,6 +137,7 @@ export const ProfileForm: Story = {
 			/>
 			<StatefulTextInput
 				name="steam"
+				type={APP_TEXT_INPUT_TYPE_URL}
 				label="Steam profile"
 				value="my steam page"
 				error="This isn't a link. Copy the address from your browser and paste it here."
@@ -132,6 +150,7 @@ export const ProfileForm: Story = {
 			/>
 			<StatefulTextInput
 				name="forum"
+				type={APP_TEXT_INPUT_TYPE_URL}
 				label="Paradox forum profile"
 				value=""
 				placeholder="Paste the link to your profile…"
@@ -144,6 +163,7 @@ export const ProfileForm: Story = {
 			/>
 			<StatefulTextInput
 				name="discord"
+				type={APP_TEXT_INPUT_TYPE_URL}
 				label="Discord server"
 				value=""
 				placeholder="Paste an invite link…"
@@ -162,7 +182,7 @@ export const ProfileForm: Story = {
 	),
 };
 
-const STATES: { caption: string; props: Partial<AppTextInputProps> }[] = [
+const STATES: { caption: string; props: Partial<AppTextInputBaseProps> }[] = [
 	{ caption: "Empty", props: { placeholder: "For example, Iberian Rulers…" } },
 	{ caption: "Filled", props: { value: "Iberian Rulers" } },
 	{ caption: "Optional", props: { label: "Short description", isOptional: true } },
@@ -185,6 +205,68 @@ export const States: Story = {
 	render: (args) => (
 		<div className="grid w-[52rem] max-w-full grid-cols-3 gap-x-8 gap-y-7">
 			{STATES.map(({ caption, props }) => (
+				<figure key={caption} className="flex min-w-0 flex-col gap-3 border-t border-border pt-3">
+					<figcaption className="text-caption text-muted">{caption}</figcaption>
+					<StatefulTextInput
+						name={caption}
+						label="Mod name"
+						value=""
+						size={args.size}
+						radius={args.radius}
+						onChange={args.onChange}
+						{...props}
+					/>
+				</figure>
+			))}
+		</div>
+	),
+};
+
+const TYPES: { caption: string; props: Partial<AppTextInputBaseProps> & AppTextInputTypeProps }[] = [
+	{ caption: "Text", props: { placeholder: "For example, Iberian Rulers…" } },
+	{
+		caption: "Email",
+		props: { type: APP_TEXT_INPUT_TYPE_EMAIL, label: "Email", placeholder: "For example, name@example.com…" },
+	},
+	{
+		caption: "Phone",
+		props: { type: APP_TEXT_INPUT_TYPE_TEL, label: "Phone number", placeholder: "For example, +44 20 7946 0958…" },
+	},
+	{
+		caption: "Link",
+		props: {
+			type: APP_TEXT_INPUT_TYPE_URL,
+			label: "Website",
+			placeholder: "Paste a link to your website…",
+			startIcon: LinkIcon,
+		},
+	},
+	{
+		caption: "Search",
+		props: {
+			type: APP_TEXT_INPUT_TYPE_SEARCH,
+			label: "Search your mods",
+			value: "Iberian",
+			startIcon: MagnifyingGlassIcon,
+			isClearable: true,
+		},
+	},
+	{
+		caption: "Password",
+		props: {
+			type: APP_TEXT_INPUT_TYPE_PASSWORD,
+			autoComplete: "new-password",
+			label: "Password",
+			value: "castile-aragon-1469",
+		},
+	},
+];
+
+export const Types: Story = {
+	parameters: { controls: { include: ["size", "radius"] } },
+	render: (args) => (
+		<div className="grid w-[40rem] max-w-full grid-cols-2 gap-x-8 gap-y-7">
+			{TYPES.map(({ caption, props }) => (
 				<figure key={caption} className="flex min-w-0 flex-col gap-3 border-t border-border pt-3">
 					<figcaption className="text-caption text-muted">{caption}</figcaption>
 					<StatefulTextInput

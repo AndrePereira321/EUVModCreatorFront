@@ -126,3 +126,40 @@ The border is the `--input` token, the only thing that uses it. Non-text UI need
 field sits on the page or on a surface (a modal, a card): `neutral-500` gives 3.57 / 3.78 in light and 4.76 / 4.05 in
 dark. Dark's old `neutral-600` gave 2.55 on surface. Axe doesn't check borders, so recheck by calculation after
 changing either ramp.
+
+### Types and autofill
+
+`type` takes one of `APP_TEXT_INPUT_TYPES`: text, email, tel, url, search and password, the types whose value is one
+line of text. A number gets its own component, because its value isn't a string; dates and files are other controls.
+
+- **Autofill:** `DEFAULT_AUTO_COMPLETE` gives each type its browser hint: `off` for text and search (a mod name gains
+  nothing from the browser's history), `email`, `tel` and `url` for those. A caller's `autoComplete` wins, `off`
+  included.
+- **Password has no default.** `AppTextInputTypeProps` is a union whose password half makes `autoComplete` required:
+  `current-password` to sign in, `new-password` to sign up (Chrome then offers to generate one), or `off`. Forgetting
+  it fails the build.
+- **Why the props are split** into `AppTextInputBaseProps` and `AppTextInputTypeProps`: a `Partial` of the union can't
+  be spread back into the component, because its password half loses the required `autoComplete`. Test and story
+  helpers take `Partial<AppTextInputBaseProps> & AppTextInputTypeProps`.
+- **The story decorator is a typed `Decorator` const.** Written inline, Storybook infers its args from the component
+  and turns them into an intersection; the union's two halves intersect to `never`, and so does every story's args.
+- **Reveal:** the eye button swaps `type` to text. It changes its name, Show or Hide password, rather than using
+  `aria-pressed`, so the tooltip always says what a click does. A password field always sets `spellCheck={false}`,
+  `autoCapitalize="none"` and `autoCorrect="off"`: once shown it is a text field, where a phone capitalises the first
+  letter and Chrome's enhanced spellcheck sends the text to a server.
+- **Browser-drawn buttons:** Chrome and Safari draw a × in a search field, Edge an eye in a password field.
+  `INPUT_CLASSES` hides both, so they don't double the component's own.
+
+### Validation lives outside the component
+
+The component shows an error and never decides one: the form passes the message in `error`. That fits a form library
+with no adapter. React Hook Form's `Controller` hands over `field` (`value`, `onChange(value)`, `onBlur`, `name`,
+`ref`) and `fieldState.error?.message`, and `<AppTextInput {...field} error={fieldState.error?.message} />` works. To
+keep it working:
+
+- `onChange` passes the raw text. Trimming and lowercasing are the schema's job, or what the player sees and what gets
+  validated drift apart.
+- `ref` and `onBlur` reach the `<input>` through `{...rest}`. The library focuses the first invalid field with the ref
+  and validates on leaving a field with `onBlur`.
+- **A form sets `noValidate`.** Without it, `type="email"`, `type="url"`, `required` and `pattern` make the browser
+  block the submit with its own bubble, unstyled and in the browser's language, before the form's validation runs.

@@ -14,6 +14,8 @@ export default function AppMain() {
 			optional: t("generic.optional"),
 			clear: t("generic.clear"),
 			loading: t("generic.loading"),
+			showPassword: t("generic.showPassword"),
+			hidePassword: t("generic.hidePassword"),
 		}),
 		[t],
 	);

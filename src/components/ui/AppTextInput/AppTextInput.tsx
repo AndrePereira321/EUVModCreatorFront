@@ -1,18 +1,35 @@
-import { CircleNotchIcon, type Icon, InfoIcon, WarningCircleIcon, XIcon } from "@phosphor-icons/react";
+import {
+	CircleNotchIcon,
+	EyeIcon,
+	EyeSlashIcon,
+	type Icon,
+	InfoIcon,
+	WarningCircleIcon,
+	XIcon,
+} from "@phosphor-icons/react";
 import { clsx } from "clsx";
-import { type ComponentProps, type MouseEvent, useId } from "react";
+import { type ComponentProps, type HTMLInputAutoCompleteAttribute, type MouseEvent, useId, useState } from "react";
 
+import {
+	APP_TEXT_INPUT_TYPE_EMAIL,
+	APP_TEXT_INPUT_TYPE_PASSWORD,
+	APP_TEXT_INPUT_TYPE_SEARCH,
+	APP_TEXT_INPUT_TYPE_TEL,
+	APP_TEXT_INPUT_TYPE_TEXT,
+	APP_TEXT_INPUT_TYPE_URL,
+} from "../../../constants/inputs.ts";
 import { APP_RADIUS_MD } from "../../../constants/styles/radius.ts";
 import { APP_SIZE_MD } from "../../../constants/styles/size.ts";
+import type { AppTextInputType } from "../../../types/inputs.ts";
 import type { AppRadius, AppSize } from "../../../types/styles.ts";
 import AppTooltip from "../AppTooltip/AppTooltip.tsx";
 import { useDefaultLabels } from "../DefaultLabelsContext.ts";
 import { RADIUS_CLASSES } from "../radius.classes.ts";
 import {
 	ADORNMENT_CLASSES,
-	CLEAR_BUTTON_CLASSES,
-	CLEAR_BUTTON_SIZE_CLASSES,
 	FIELD_BASE_CLASSES,
+	FIELD_BUTTON_CLASSES,
+	FIELD_BUTTON_SIZE_CLASSES,
 	FIELD_INVALID_CLASSES,
 	FIELD_VALID_CLASSES,
 	ICON_SIZE_CLASSES,
@@ -21,9 +38,19 @@ import {
 	SIZE_CLASSES,
 } from "./AppTextInput.classes.ts";
 
-export interface AppTextInputProps extends Omit<
+export type AppTextInputTypeProps =
+	| {
+			type?: Exclude<AppTextInputType, typeof APP_TEXT_INPUT_TYPE_PASSWORD>;
+			autoComplete?: HTMLInputAutoCompleteAttribute;
+	  }
+	| {
+			type: typeof APP_TEXT_INPUT_TYPE_PASSWORD;
+			autoComplete: "current-password" | "new-password" | "off";
+	  };
+
+export interface AppTextInputBaseProps extends Omit<
 	ComponentProps<"input">,
-	"className" | "type" | "size" | "value" | "onChange"
+	"className" | "type" | "size" | "value" | "onChange" | "autoComplete"
 > {
 	name: string;
 	label: string;
@@ -42,7 +69,22 @@ export interface AppTextInputProps extends Omit<
 	clearLabel?: string;
 	isLoading?: boolean;
 	loadingLabel?: string;
+	showPasswordLabel?: string;
+	hidePasswordLabel?: string;
 }
+
+export type AppTextInputProps = AppTextInputBaseProps & AppTextInputTypeProps;
+
+const DEFAULT_AUTO_COMPLETE: Record<AppTextInputType, HTMLInputAutoCompleteAttribute | undefined> = {
+	[APP_TEXT_INPUT_TYPE_TEXT]: "off",
+	[APP_TEXT_INPUT_TYPE_EMAIL]: "email",
+	[APP_TEXT_INPUT_TYPE_TEL]: "tel",
+	[APP_TEXT_INPUT_TYPE_URL]: "url",
+	[APP_TEXT_INPUT_TYPE_SEARCH]: "off",
+	[APP_TEXT_INPUT_TYPE_PASSWORD]: undefined,
+};
+
+const PASSWORD_INPUT_PROPS = { spellCheck: false, autoCapitalize: "none", autoCorrect: "off" } as const;
 
 export default function AppTextInput({
 	id,
@@ -50,6 +92,8 @@ export default function AppTextInput({
 	label,
 	value,
 	onChange,
+	type = APP_TEXT_INPUT_TYPE_TEXT,
+	autoComplete,
 	description,
 	error,
 	size = APP_SIZE_MD,
@@ -63,6 +107,8 @@ export default function AppTextInput({
 	clearLabel,
 	isLoading = false,
 	loadingLabel,
+	showPasswordLabel,
+	hidePasswordLabel,
 	disabled,
 	readOnly,
 	maxLength,
@@ -70,6 +116,7 @@ export default function AppTextInput({
 }: AppTextInputProps) {
 	const defaultLabels = useDefaultLabels();
 	const generatedId = useId();
+	const [isPasswordShown, setIsPasswordShown] = useState(false);
 	const inputId = id ?? generatedId;
 	const descriptionId = `${inputId}-description`;
 	const suffixId = `${inputId}-suffix`;
@@ -78,6 +125,8 @@ export default function AppTextInput({
 		[description && descriptionId, suffix && suffixId, error && errorId].filter(Boolean).join(" ") || undefined;
 	const showClear = isClearable && value !== "" && !disabled && !readOnly;
 	const isNearLimit = maxLength != null && value.length >= maxLength * 0.9;
+	const isPassword = type === APP_TEXT_INPUT_TYPE_PASSWORD;
+	const showReveal = isPassword && !disabled;
 
 	const focusInput = () => document.getElementById(inputId)?.focus();
 
@@ -101,6 +150,7 @@ export default function AppTextInput({
 		RADIUS_CLASSES[radius],
 	);
 	const adornmentClass = clsx(ADORNMENT_CLASSES, ICON_SIZE_CLASSES[size]);
+	const fieldButtonClass = clsx(FIELD_BUTTON_CLASSES, FIELD_BUTTON_SIZE_CLASSES[size]);
 
 	return (
 		<div className={clsx("flex min-w-0 flex-col gap-1.5", disabled && "opacity-50")}>
@@ -133,11 +183,12 @@ export default function AppTextInput({
 			<div className={fieldClass} onMouseDown={handleFieldMouseDown}>
 				{StartIcon && <StartIcon aria-hidden className={adornmentClass} />}
 				<input
-					autoComplete="off"
+					{...(isPassword ? PASSWORD_INPUT_PROPS : {})}
 					{...rest}
 					id={inputId}
 					name={name}
-					type="text"
+					type={showReveal && isPasswordShown ? APP_TEXT_INPUT_TYPE_TEXT : type}
+					autoComplete={autoComplete ?? DEFAULT_AUTO_COMPLETE[type]}
 					value={value}
 					disabled={disabled}
 					readOnly={readOnly}
@@ -157,13 +208,33 @@ export default function AppTextInput({
 				{showClear && (
 					<AppTooltip text={clearLabel ?? defaultLabels.clear} isLabel>
 						{(triggerProps) => (
+							<button {...triggerProps} type="button" onClick={clear} className={fieldButtonClass}>
+								<XIcon aria-hidden className={ICON_SIZE_CLASSES[size]} />
+							</button>
+						)}
+					</AppTooltip>
+				)}
+				{showReveal && (
+					<AppTooltip
+						text={
+							isPasswordShown
+								? (hidePasswordLabel ?? defaultLabels.hidePassword)
+								: (showPasswordLabel ?? defaultLabels.showPassword)
+						}
+						isLabel
+					>
+						{(triggerProps) => (
 							<button
 								{...triggerProps}
 								type="button"
-								onClick={clear}
-								className={clsx(CLEAR_BUTTON_CLASSES, CLEAR_BUTTON_SIZE_CLASSES[size])}
+								onClick={() => setIsPasswordShown((shown) => !shown)}
+								className={fieldButtonClass}
 							>
-								<XIcon aria-hidden className={ICON_SIZE_CLASSES[size]} />
+								{isPasswordShown ? (
+									<EyeSlashIcon aria-hidden className={ICON_SIZE_CLASSES[size]} />
+								) : (
+									<EyeIcon aria-hidden className={ICON_SIZE_CLASSES[size]} />
+								)}
 							</button>
 						)}
 					</AppTooltip>

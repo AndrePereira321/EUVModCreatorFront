@@ -17,6 +17,8 @@ const DEFAULT_LABELS = {
 	optional: "(optional)",
 	clear: "Clear",
 	loading: "Loading…",
+	showPassword: "Show password",
+	hidePassword: "Hide password",
 };
 
 function setup(props: Partial<AppTooltipProps> = {}) {

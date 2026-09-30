@@ -1,0 +1,15 @@
+export const APP_TEXT_INPUT_TYPE_TEXT = "text";
+export const APP_TEXT_INPUT_TYPE_EMAIL = "email";
+export const APP_TEXT_INPUT_TYPE_TEL = "tel";
+export const APP_TEXT_INPUT_TYPE_URL = "url";
+export const APP_TEXT_INPUT_TYPE_SEARCH = "search";
+export const APP_TEXT_INPUT_TYPE_PASSWORD = "password";
+
+export const APP_TEXT_INPUT_TYPES = [
+	APP_TEXT_INPUT_TYPE_TEXT,
+	APP_TEXT_INPUT_TYPE_EMAIL,
+	APP_TEXT_INPUT_TYPE_TEL,
+	APP_TEXT_INPUT_TYPE_URL,
+	APP_TEXT_INPUT_TYPE_SEARCH,
+	APP_TEXT_INPUT_TYPE_PASSWORD,
+] as const;
