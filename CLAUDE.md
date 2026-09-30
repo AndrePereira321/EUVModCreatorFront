@@ -158,8 +158,30 @@ that drops the text to 2.7:1 and 2.1:1. Blend 25% toward `-strong` instead:
 `hover:bg-[color-mix(in_oklab,var(--primary),var(--primary-strong)_25%)]`.
 
 `-strong` means strongest against the page: darker in light mode, lighter in dark mode. Dark mode is
-`data-theme="dark"` on an ancestor, light is the default. Web fonts are not set up yet; `--font-display` is a
-fallback stack until that is decided.
+`data-theme="dark"` on an ancestor, light is the default.
+
+**Text roles.** Text is styled with one of eight roles, and each one sets family, size, line height, weight and
+tracking in a single class. Tailwind's stock `text-sm`…`text-6xl` are removed (`--text-*: initial`) and produce no CSS.
+
+| role              | face               | use                                           |
+| ----------------- | ------------------ | --------------------------------------------- |
+| `text-display`    | Cormorant Garamond | landing and gallery headlines                 |
+| `text-title`      | Cormorant Garamond | page title; every `h1` by default             |
+| `text-heading`    | Cormorant Garamond | sections, modal titles; every `h2` by default |
+| `text-subheading` | Noto Sans          | card and group titles; every `h3` by default  |
+| `text-body`       | Noto Sans          | running text, inputs; the page default        |
+| `text-small`      | Noto Sans          | help text, secondary lines                    |
+| `text-label`      | Noto Sans          | form labels, menu items, small buttons        |
+| `text-caption`    | Noto Sans          | metadata, chips                               |
+
+- **Colour is separate:** `text-foreground`, `text-muted` or `text-<role>-strong` beside the role.
+- **Overrides still work.** `font-medium` or `leading-tight` beat a role's own weight or line height, whatever the
+  class order. A role's family can't be overridden with `font-sans`; pick the right role instead.
+- **Weights are 400, 500 and 600 only** (`font-normal`, `font-medium`, `font-semibold`).
+- **No arbitrary sizes** (`text-[17px]`). If no role fits, add a role in `index.css`.
+- **The fonts are imported in two places,** `src/main.tsx` and `.storybook/preview.tsx`. A new face goes in both.
+
+Every role is shown in the `styles/Typography` story.
 
 **TypeScript settings that fail the build:**
 

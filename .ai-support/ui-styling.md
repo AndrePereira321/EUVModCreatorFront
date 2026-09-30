@@ -39,7 +39,9 @@ to the current theme there; declared on `:root` it would keep the light value un
 - **No `className` prop.** Without a class-merging helper, a caller's `bg-*` next to the component's own is decided by
   stylesheet order, not class order. Style props are the only styling API; wrap the component for layout.
 - **One class per CSS property per element.** The same conflict applies inside the component: the base classes hold
-  `border`, and each fill sets its own border colour, rather than a base colour that a fill overrides.
+  `border`, and each fill sets its own border colour, rather than a base colour that a fill overrides. One exception
+  is safe: `font-medium` in the base classes next to a size's text role (`text-body`). The role reads its weight
+  through Tailwind's `--tw-font-weight`, which `font-medium` sets, so the result is 500 whatever the stylesheet order.
 - **Recheck contrast after changing a ramp or a hover mix.** Compute it from the `oklch()` values in `index.css`
   (OKLab → sRGB → WCAG luminance) for every variant, fill and theme; eyeballing missed the old 2.7:1 hover.
 
@@ -47,15 +49,17 @@ to the current theme there; declared on `:root` it would keep the light value un
 
 `startIcon` and `endIcon` take a Phosphor component (`FloppyDiskIcon`, not `<FloppyDiskIcon />`), so the button
 decides how it renders. It adds `aria-hidden`, and Phosphor's own defaults, `1em` and `currentColor`, make the icon
-follow the size's `text-*` and the fill's text colour with no map of its own. Start and end come from DOM order, so
+follow the size's text role and the fill's text colour with no map of its own. Start and end come from DOM order, so
 they stay right in a right-to-left language.
 
 `BASE_CLASSES` holds `inline-flex items-center gap-2` because Tailwind's preflight sets `svg { display: block }`;
 without flex the icon stacks above the text.
 
 **Icon-only.** Without `text`, the button takes `ICON_ONLY_SIZE_CLASSES` instead of `SIZE_CLASSES`: a square of the
-same height, with a font size that draws the icon at half its width (16, 20 and 24px), because alone it carries the
-whole meaning. The two maps are alternatives, never both, so one class per property still holds.
+same height, with the icon at half its width (16, 20 and 24px), because alone it carries the whole meaning. The
+icon is sized directly with `*:size-4` (`*:` targets the button's direct children), not through the font size,
+because there are no text sizes outside the type roles and none of them is 20 or 24px. The two maps are
+alternatives, never both, so one class per property still holds.
 
 `AppButtonProps` is one flat interface, so the types don't enforce the icon-only case. An icon-only button needs an
 `aria-label` and a `startIcon` — without the label a screen reader announces a nameless button, which Storybook's

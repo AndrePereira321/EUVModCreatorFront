@@ -17,11 +17,11 @@ export default function AppMenu() {
 	];
 
 	return (
-		<nav className="flex gap-4 border-b border-primary-300 px-2 py-4">
+		<nav className="flex items-center gap-4 border-b border-primary-300 px-2 py-4">
 			<div>
-				<h2 className="text-primary">{t("app.title")}</h2>
+				<h2 className="text-primary-strong">{t("app.title")}</h2>
 			</div>
-			<div className="border-l border-secondary-200 p-0"></div>
+			<div className="self-stretch border-l border-secondary-200 p-0"></div>
 			<div>
 				<ul className="flex gap-2">
 					{menuItems.map((menuItem) => (

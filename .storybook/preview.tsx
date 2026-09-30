@@ -1,4 +1,6 @@
 import type { Preview } from "@storybook/react-vite";
+import "@fontsource-variable/cormorant-garamond";
+import "@fontsource-variable/noto-sans";
 
 import "../src/styles/index.css";
 

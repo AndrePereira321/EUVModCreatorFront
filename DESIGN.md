@@ -39,7 +39,50 @@ colors:
   error-strong: "oklch(0.37 0.14 25)"
 typography:
   display:
-    fontFamily: "Georgia, 'Times New Roman', serif"
+    fontFamily: "Cormorant Garamond"
+    fontSize: "3rem"
+    fontWeight: 500
+    lineHeight: 1.05
+    letterSpacing: "-0.015em"
+  title:
+    fontFamily: "Cormorant Garamond"
+    fontSize: "2.25rem"
+    fontWeight: 600
+    lineHeight: 1.1
+    letterSpacing: "-0.01em"
+  heading:
+    fontFamily: "Cormorant Garamond"
+    fontSize: "1.625rem"
+    fontWeight: 600
+    lineHeight: 1.2
+    letterSpacing: "-0.005em"
+  subheading:
+    fontFamily: "Noto Sans"
+    fontSize: "1.125rem"
+    fontWeight: 600
+    lineHeight: 1.4
+  body:
+    fontFamily: "Noto Sans"
+    fontSize: "1rem"
+    fontWeight: 400
+    lineHeight: 1.6
+  small:
+    fontFamily: "Noto Sans"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.5
+  label:
+    fontFamily: "Noto Sans"
+    fontSize: "0.875rem"
+    fontWeight: 500
+    lineHeight: 1.25
+    letterSpacing: "0.005em"
+  caption:
+    fontFamily: "Noto Sans"
+    fontSize: "0.75rem"
+    fontWeight: 500
+    lineHeight: 1.35
+    letterSpacing: "0.02em"
 rounded:
   none: "0"
   sm: "0.25rem"
@@ -78,8 +121,13 @@ Neutrals: `background`, `surface`, `foreground`, `muted`, `border`, `input`, `ri
 
 ## Typography
 
-Web fonts are not decided. Headings `h1`–`h3` use a Georgia fallback stack; everything else uses Tailwind's default
-system sans.
+Two faces, both of which ship with the game: **Cormorant Garamond** for display and **Noto Sans** for everything
+else. They are self-hosted as variable fonts.
+
+Text comes in eight roles, each a whole style (family, size, line height, weight, tracking): three serif,
+**display**, **title** and **heading**, and five sans, **subheading**, **body**, **small**, **label** and
+**caption**. The frontmatter lists the values. Body is the page default, and `h1`, `h2` and `h3` take title,
+heading and subheading. Cormorant is only used at 26px and up. Weights are 400, 500 and 600. Headings are balanced.
 
 ## Shapes
 
@@ -94,8 +142,8 @@ Buttons default to a 6px radius, with square, 4px and pill options. Borders are 
 outline and ghost hover to the soft tint. Neutral's soft tint is the text colour at 8% opacity. Pressing moves the
 button 1px down. Focus uses the global 2px ring.
 
-Optional `startIcon` and `endIcon` take Phosphor icons, drawn at the text size in the text colour, 8px from the
-label. Without `text` the button is icon-only: a square of the size's height (32, 40 or 48px) with the icon at half
+Labels are Noto Sans at weight 500: 14px (sm), 16px (md) or 18px (lg). Optional `startIcon` and `endIcon` take
+Phosphor icons, drawn at the text size in the text colour, 8px from the label. Without `text` the button is icon-only: a square of the size's height (32, 40 or 48px) with the icon at half
 its width, named by an `aria-label`. Ghost is the transparent option. A label wider than the button's container ends
 in an ellipsis.
 
@@ -103,7 +151,7 @@ in an ellipsis.
 
 `AppModal` is a surface panel, 512px wide at most, with an 8px radius, a 1px border and a large soft shadow, over a
 50% near-black scrim. It is centred from the `sm` breakpoint up and sits at the bottom of the screen on a phone, 16px
-from every edge. The title is the display serif at 20px, with a ghost neutral close button in the top corner. The body
+from every edge. The title is in the heading role, with a ghost neutral close button in the top corner. The body
 scrolls when it runs past the screen height. The footer is a tray in the page background colour, separated by a 1px
 border; its buttons sit at the right, Cancel (neutral outline) before Confirm (primary solid), and stack full-width
 with Confirm on top on a phone. It fades in and rises 12px over 200ms, fading only under reduced motion.
@@ -114,6 +162,7 @@ with Confirm on top on a phone. It fades in and rises 12px over 200ms, fading on
 
 - **Do** prefer the theme-aware tokens over numbered ramp steps.
 - **Do** use `text-<role>-strong` for role-coloured text.
+- **Do** style text with one of the eight roles.
 
 ### Don't:
 

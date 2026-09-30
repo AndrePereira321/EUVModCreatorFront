@@ -7,7 +7,9 @@ export interface AppMenuItemProps {
 export default function AppMenuItem(props: AppMenuItemProps) {
 	return (
 		<li id={props.id}>
-			<a href={props.path}>{props.title}</a>
+			<a href={props.path} className="text-label">
+				{props.title}
+			</a>
 		</li>
 	);
 }

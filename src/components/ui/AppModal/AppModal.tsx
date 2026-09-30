@@ -59,7 +59,7 @@ export default function AppModal({
 			return header;
 		}
 		if (title) {
-			return <h2 className="pt-0.5 text-xl leading-7 font-semibold text-balance">{title}</h2>;
+			return <h2>{title}</h2>;
 		}
 		return null;
 	};

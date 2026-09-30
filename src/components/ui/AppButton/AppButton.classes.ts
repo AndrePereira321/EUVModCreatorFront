@@ -45,15 +45,15 @@ export const FILL_CLASSES: Record<AppFill, string> = {
 };
 
 export const SIZE_CLASSES: Record<AppSize, string> = {
-	[APP_SIZE_SM]: "h-8 px-3 text-sm",
-	[APP_SIZE_MD]: "h-10 px-4 text-base",
-	[APP_SIZE_LG]: "h-12 px-6 text-lg",
+	[APP_SIZE_SM]: "h-8 px-3 text-label",
+	[APP_SIZE_MD]: "h-10 px-4 text-body",
+	[APP_SIZE_LG]: "h-12 px-6 text-subheading",
 };
 
 export const ICON_ONLY_SIZE_CLASSES: Record<AppSize, string> = {
-	[APP_SIZE_SM]: "size-8 shrink-0 text-base",
-	[APP_SIZE_MD]: "size-10 shrink-0 text-xl",
-	[APP_SIZE_LG]: "size-12 shrink-0 text-2xl",
+	[APP_SIZE_SM]: "size-8 shrink-0 *:size-4",
+	[APP_SIZE_MD]: "size-10 shrink-0 *:size-5",
+	[APP_SIZE_LG]: "size-12 shrink-0 *:size-6",
 };
 
 export const RADIUS_CLASSES: Record<AppRadius, string> = {

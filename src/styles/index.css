@@ -4,12 +4,14 @@
 /*
  * Theme structure (Tailwind v4, CSS-first — there is no tailwind.config.js):
  *
- *   1. @theme                     the ramps. Every --color-* here becomes a utility: bg-primary-500, text-neutral-700…
- *   2. :root / [data-theme=dark]  semantic tokens as plain CSS variables, one value per theme. No utilities.
- *   3. @theme inline              exposes the semantic tokens as utilities: bg-primary, text-muted, border-border…
+ *   1. @theme                     the ramps, fonts and text roles. Every --color-* here becomes a utility:
+ *                                 bg-primary-500, text-neutral-700…; every --text-* a role: text-title, text-label…
+ *   2. @utility text-*            adds each text role's font family.
+ *   3. :root / [data-theme=dark]  semantic tokens as plain CSS variables, one value per theme. No utilities.
+ *   4. @theme inline              exposes the semantic tokens as utilities: bg-primary, text-muted, border-border…
  *                                 `inline` makes the utility read the variable on the element itself, which is what
  *                                 lets the dark override apply below <html>.
- *   4. @layer base                element defaults. Utilities in components still win over these.
+ *   5. @layer base                element defaults. Utilities in components still win over these.
  *
  * ── Two kinds of colour utility, and when to reach for each ──────────────────
  *
@@ -147,8 +149,86 @@
 	--color-error-900: oklch(0.31 0.11 25);
 	--color-error-950: oklch(0.23 0.07 25);
 
-	/* Headings. Web fonts are not set up yet; this is the fallback stack until they are. */
-	--font-display: Georgia, "Times New Roman", serif;
+	/* Fonts. The faces load in main.tsx and .storybook/preview.tsx. */
+	--font-*: initial;
+	--font-sans: "Noto Sans Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-display: "Cormorant Garamond Variable", Georgia, serif;
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+	--font-weight-*: initial;
+	--font-weight-normal: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+
+	/*
+	 * Text roles. Each one is a whole text style: `text-title` sets size, line height, weight, tracking and (in the
+	 * @utility blocks below) the family. Tailwind's stock scale is gone, so text-sm, text-xl… produce nothing.
+	 * font-medium, leading-tight and the like still override a role's weight or line height.
+	 */
+	--text-*: initial;
+
+	--text-display: 3rem;
+	--text-display--line-height: 1.05;
+	--text-display--font-weight: 500;
+	--text-display--letter-spacing: -0.015em;
+
+	--text-title: 2.25rem;
+	--text-title--line-height: 1.1;
+	--text-title--font-weight: 600;
+	--text-title--letter-spacing: -0.01em;
+
+	--text-heading: 1.625rem;
+	--text-heading--line-height: 1.2;
+	--text-heading--font-weight: 600;
+	--text-heading--letter-spacing: -0.005em;
+
+	--text-subheading: 1.125rem;
+	--text-subheading--line-height: 1.4;
+	--text-subheading--font-weight: 600;
+
+	--text-body: 1rem;
+	--text-body--line-height: 1.6;
+	--text-body--font-weight: 400;
+
+	--text-small: 0.875rem;
+	--text-small--line-height: 1.5;
+	--text-small--font-weight: 400;
+
+	--text-label: 0.875rem;
+	--text-label--line-height: 1.25;
+	--text-label--font-weight: 500;
+	--text-label--letter-spacing: 0.005em;
+
+	--text-caption: 0.75rem;
+	--text-caption--line-height: 1.35;
+	--text-caption--font-weight: 500;
+	--text-caption--letter-spacing: 0.02em;
+}
+
+/* A size token can't carry a family, so each role is extended with its own. */
+@utility text-display {
+	font-family: var(--font-display);
+}
+@utility text-title {
+	font-family: var(--font-display);
+}
+@utility text-heading {
+	font-family: var(--font-display);
+}
+@utility text-subheading {
+	font-family: var(--font-sans);
+}
+@utility text-body {
+	font-family: var(--font-sans);
+}
+@utility text-small {
+	font-family: var(--font-sans);
+}
+@utility text-label {
+	font-family: var(--font-sans);
+}
+@utility text-caption {
+	font-family: var(--font-sans);
 }
 
 :root {
@@ -295,14 +375,29 @@
 
 @layer base {
 	body {
+		@apply text-body;
 		background-color: var(--background);
 		color: var(--foreground);
+	}
+
+	h1 {
+		@apply text-title;
+	}
+	h2 {
+		@apply text-heading;
+	}
+	h3 {
+		@apply text-subheading;
 	}
 
 	h1,
 	h2,
 	h3 {
-		font-family: var(--font-display);
+		text-wrap: balance;
+	}
+
+	p {
+		text-wrap: pretty;
 	}
 
 	:focus-visible {

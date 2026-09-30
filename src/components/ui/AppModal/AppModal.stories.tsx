@@ -97,8 +97,8 @@ export const CustomHeader: Story = {
 		title: undefined,
 		header: (
 			<div className="flex flex-col gap-1">
-				<h2 className="text-xl leading-7 font-semibold">Make this mod public?</h2>
-				<p className="text-sm text-muted">Iberian Rulers</p>
+				<h2>Make this mod public?</h2>
+				<p className="text-small text-muted">Iberian Rulers</p>
 			</div>
 		),
 		children: <p>Anyone will be able to find it in the gallery, download it, and copy it to make their own version.</p>,
