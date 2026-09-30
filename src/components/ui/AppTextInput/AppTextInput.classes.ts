@@ -10,7 +10,7 @@ export const FIELD_VALID_CLASSES =
 export const FIELD_INVALID_CLASSES = "border-error [--ring:var(--error)]";
 
 export const INPUT_CLASSES =
-	"min-w-0 flex-1 self-stretch bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed [&::-ms-reveal]:hidden [&::-webkit-search-cancel-button]:appearance-none";
+	"min-w-0 flex-1 self-stretch bg-transparent text-foreground outline-none placeholder:text-muted disabled:cursor-not-allowed [&::-ms-reveal]:hidden [&[role=spinbutton]]:min-w-[6ch] [&[role=spinbutton]]:tabular-nums [&::-webkit-search-cancel-button]:appearance-none";
 
 export const SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "h-8 gap-1.5 px-2.5 text-small",
@@ -27,7 +27,7 @@ export const ICON_SIZE_CLASSES: Record<AppSize, string> = {
 export const ADORNMENT_CLASSES = "shrink-0 text-muted";
 
 export const FIELD_BUTTON_CLASSES =
-	"inline-flex shrink-0 items-center justify-center rounded-sm text-muted transition-colors hover:bg-[color-mix(in_oklab,var(--foreground)_8%,transparent)] hover:text-foreground";
+	"inline-flex shrink-0 items-center justify-center rounded-sm text-muted transition-colors enabled:hover:bg-[color-mix(in_oklab,var(--foreground)_8%,transparent)] enabled:hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40";
 
 export const FIELD_BUTTON_SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "size-6",

@@ -9,6 +9,8 @@ export interface DefaultLabels {
 	loading: string;
 	showPassword: string;
 	hidePassword: string;
+	increase: string;
+	decrease: string;
 }
 
 export const DefaultLabelsContext = createContext<DefaultLabels | null>(null);

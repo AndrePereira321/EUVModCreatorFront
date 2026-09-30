@@ -173,6 +173,17 @@ limit. With an `error`, the border and the focus ring turn to the error colour, 
 start in the small role, error-strong, after a filled warning-circle icon. Disabled fades the whole field, label
 included, to 50%.
 
+A `hint` sits at the footer's end, muted, in the small role; with a count as well, the hint comes first. A long suffix
+truncates before the value loses its space.
+
+### Number input
+
+`AppNumberInput` is the text input with two ghost buttons at the field's end, − and +, 2px apart and named by
+"Decrease" and "Increase" tooltips. The button that would step past a limit fades to 40%; read-only and disabled
+fields have none. With both `min` and `max`, the footer's hint shows the range, as "0–100", or "-1 – 1" when a limit
+is negative. The digits are tabular, and the value keeps at least six characters' width. Typed letters don't appear,
+and a value past a limit changes to the limit when the field loses focus.
+
 ### Modal
 
 `AppModal` is a surface panel, 512px wide at most, with an 8px radius, a 1px border and a large soft shadow, over a

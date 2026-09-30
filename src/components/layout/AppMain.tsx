@@ -16,6 +16,8 @@ export default function AppMain() {
 			loading: t("generic.loading"),
 			showPassword: t("generic.showPassword"),
 			hidePassword: t("generic.hidePassword"),
+			increase: t("generic.increase"),
+			decrease: t("generic.decrease"),
 		}),
 		[t],
 	);

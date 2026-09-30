@@ -163,3 +163,52 @@ keep it working:
   and validates on leaving a field with `onBlur`.
 - **A form sets `noValidate`.** Without it, `type="email"`, `type="url"`, `required` and `pattern` make the browser
   block the submit with its own bubble, unstyled and in the browser's language, before the form's validation runs.
+
+## Number input
+
+`AppNumberInput` renders `AppTextInput` and adds the number rules, so label, description, error, suffix, loading,
+clear, sizes and radii come from the text input unchanged. The text input has two openings for it: `children`, drawn
+inside the field after its own buttons (the − and + go there), and `hint`, a short muted note at the footer's end (the
+range goes there). `children` was already in the props through `ComponentProps<"input">`; now it's taken out before
+`{...rest}` reaches the `<input>`, which can't have children.
+
+- **`type="text"`, not `type="number"`.** A number input lets "e" in, changes the value on a scroll over the field,
+  draws spinners no CSS styles the same everywhere, and reports `""` for anything it can't parse, so "-" or "1." halfway
+  through typing can't be told from an empty field. A text input with `role="spinbutton"`, `aria-valuenow`, `-valuemin`
+  and `-valuemax` gives screen readers the same control. oxlint's `prefer-tag-over-role` is disabled on that line.
+- **`inputMode`:** `numeric` for whole numbers, `decimal` when the step has decimals, `text` when `min` allows
+  negatives, because the iPhone's number keypads have no minus key. Editing happens on a desktop (PRODUCT.md), so
+  this only matters on the gallery's phone users, if a form ever reaches them.
+- **The value is `number | null`.** Empty is `null`, never 0. The text the player is typing is a draft, kept with the
+  value it parsed to (`{ text, value }`), and shown only while that value is still the prop. If the form changes the
+  value, a Reset say, the draft no longer matches and the field shows the form's value. No effect syncs them: it is
+  derived during render.
+- **What goes in:** each change is tested against a pattern built from `min` (minus sign or not) and the decimals
+  (`maxDecimals`, by default as many as `step` has, so a step of 1 takes whole numbers). A change that fails is
+  dropped, and React puts the old text back. A comma is read as the decimal point, for players who write 2,5; the
+  field shows a point once it loses focus. Grouping (1,000) isn't read, since it would clash with that comma.
+- **Clamping:** a typed value outside `min`–`max` is reported as typed, then brought inside the range when the field
+  loses focus or on Enter. Only a value the player typed: one the form passes in out of range stays until the player
+  edits it, so opening a saved mod doesn't silently change it; the form's validation reports it instead. So the range
+  is the component's job and every other rule, required fields included, is the form's.
+- **Stepping** snaps to the grid of `min` (or 0) plus whole steps: from 23 with a step of 5, + gives 25 and − gives 20,
+  as the browser's own `stepUp` does. From empty it starts at 0, clamped into the range. Results are rounded to the
+  step's decimals, so 0.2 + 0.1 is 0.3 and not 0.30000000000000004. Past a limit a step lands on the limit.
+- **Keys:** arrows step; Shift with an arrow, Page Up and Page Down take `largeStep` (10 steps by default). Home and End
+  keep moving the caret rather than jumping to the limits, which the ARIA pattern allows but a typed field needs more.
+- **The buttons aren't Tab stops** (`tabIndex={-1}`): the arrow keys do the same from the field, and three stops per
+  field would slow a form down. `onMouseDown` prevents the default, and a mouse press moves focus into the field, so
+  the arrow keys work straight after a click. A touch press leaves focus where it is, so the phone keyboard doesn't
+  open. When a step happens while focus is outside the field (a screen reader or a touch press), a polite live region
+  reads the new value, since nothing else would.
+- **Holding a button repeats.** The step happens on `click`, the one event every way of pressing a button sends.
+  `pointerdown` stores the held direction in state with a 400ms delay; an effect waits that long, steps, and stores the
+  60ms repeat. Each stored object is new, so the effect runs again: the chain lasts while the value moves and stops
+  at a limit, on release, or when the pointer leaves. The tick calls `stepBy` through `useEffectEvent`, so it reads
+  the current value without the effect depending on it. After a repeat, the release's click is skipped; a click with
+  `detail === 0` (keyboard, screen reader) always steps.
+- **Buttons at a limit** are disabled, not hidden, so the field keeps its shape. `FIELD_BUTTON_CLASSES` hovers only
+  `enabled:` buttons and fades disabled ones to 40%. Read-only and disabled fields have no buttons, like the clear
+  and reveal buttons.
+- **Width:** a spin button keeps at least 6ch, and a long suffix truncates first, so a crowded field never shows
+  12500 as "12". The digits are `tabular-nums`, so they don't shift as the value steps.

@@ -17,6 +17,8 @@ const DEFAULT_LABELS = {
 	loading: "Loading…",
 	showPassword: "Show password",
 	hidePassword: "Hide password",
+	increase: "Increase",
+	decrease: "Decrease",
 };
 
 function WithLabels({ children }: { children: ReactNode }) {

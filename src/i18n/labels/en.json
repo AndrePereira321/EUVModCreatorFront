@@ -11,7 +11,9 @@
 		"clear": "Clear",
 		"loading": "Loading…",
 		"showPassword": "Show password",
-		"hidePassword": "Hide password"
+		"hidePassword": "Hide password",
+		"increase": "Increase",
+		"decrease": "Decrease"
 	},
 	"auth": {
 		"login": "Login",

@@ -35,6 +35,8 @@ const DEFAULT_LABELS = {
 	loading: "Loading…",
 	showPassword: "Show password",
 	hidePassword: "Hide password",
+	increase: "Increase",
+	decrease: "Decrease",
 };
 
 function StatefulTextInput({ value: initialValue, onChange, ...props }: AppTextInputProps) {
@@ -84,6 +86,8 @@ const meta = {
 		endIcon: { control: "select", options: Object.keys(ICONS), mapping: ICONS },
 		placeholder: { control: "text" },
 		maxLength: { control: "number" },
+		hint: { control: "text" },
+		children: { control: false },
 		disabled: { control: "boolean" },
 		readOnly: { control: "boolean" },
 	},

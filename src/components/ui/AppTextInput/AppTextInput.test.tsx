@@ -25,6 +25,8 @@ const DEFAULT_LABELS = {
 	loading: "Loading…",
 	showPassword: "Show password",
 	hidePassword: "Hide password",
+	increase: "Increase",
+	decrease: "Decrease",
 };
 
 type Overrides = Partial<AppTextInputBaseProps> & AppTextInputTypeProps;
@@ -180,6 +182,13 @@ test("reads the suffix with the field", async () => {
 	const { input } = await setup({ label: "Chance", value: "25", suffix: "%" });
 
 	await expect.element(input).toHaveAccessibleDescription("%");
+});
+
+test("shows the hint under the field and reads it with it", async () => {
+	const { screen, input } = await setup({ hint: "Letters and spaces only" });
+
+	await expect.element(screen.getByText("Letters and spaces only")).toBeVisible();
+	await expect.element(input).toHaveAccessibleDescription("Letters and spaces only");
 });
 
 test("clicking the suffix focuses the field", async () => {

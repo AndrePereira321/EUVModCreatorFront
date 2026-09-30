@@ -8,7 +8,14 @@ import {
 	XIcon,
 } from "@phosphor-icons/react";
 import { clsx } from "clsx";
-import { type ComponentProps, type HTMLInputAutoCompleteAttribute, type MouseEvent, useId, useState } from "react";
+import {
+	type ComponentProps,
+	type HTMLInputAutoCompleteAttribute,
+	type MouseEvent,
+	type ReactNode,
+	useId,
+	useState,
+} from "react";
 
 import {
 	APP_TEXT_INPUT_TYPE_EMAIL,
@@ -63,6 +70,7 @@ export interface AppTextInputBaseProps extends Omit<
 	startIcon?: Icon;
 	endIcon?: Icon;
 	suffix?: string;
+	hint?: string;
 	isOptional?: boolean;
 	optionalLabel?: string;
 	isClearable?: boolean;
@@ -71,6 +79,7 @@ export interface AppTextInputBaseProps extends Omit<
 	loadingLabel?: string;
 	showPasswordLabel?: string;
 	hidePasswordLabel?: string;
+	children?: ReactNode;
 }
 
 export type AppTextInputProps = AppTextInputBaseProps & AppTextInputTypeProps;
@@ -101,6 +110,7 @@ export default function AppTextInput({
 	startIcon: StartIcon,
 	endIcon: EndIcon,
 	suffix,
+	hint,
 	isOptional = false,
 	optionalLabel,
 	isClearable = false,
@@ -109,6 +119,7 @@ export default function AppTextInput({
 	loadingLabel,
 	showPasswordLabel,
 	hidePasswordLabel,
+	children,
 	disabled,
 	readOnly,
 	maxLength,
@@ -120,9 +131,11 @@ export default function AppTextInput({
 	const inputId = id ?? generatedId;
 	const descriptionId = `${inputId}-description`;
 	const suffixId = `${inputId}-suffix`;
+	const hintId = `${inputId}-hint`;
 	const errorId = `${inputId}-error`;
 	const describedBy =
-		[description && descriptionId, suffix && suffixId, error && errorId].filter(Boolean).join(" ") || undefined;
+		[description && descriptionId, suffix && suffixId, hint && hintId, error && errorId].filter(Boolean).join(" ") ||
+		undefined;
 	const showClear = isClearable && value !== "" && !disabled && !readOnly;
 	const isNearLimit = maxLength != null && value.length >= maxLength * 0.9;
 	const isPassword = type === APP_TEXT_INPUT_TYPE_PASSWORD;
@@ -199,7 +212,7 @@ export default function AppTextInput({
 					className={INPUT_CLASSES}
 				/>
 				{suffix && (
-					<span id={suffixId} className="shrink-0 text-muted">
+					<span id={suffixId} className="min-w-0 truncate text-muted">
 						{suffix}
 					</span>
 				)}
@@ -239,8 +252,9 @@ export default function AppTextInput({
 						)}
 					</AppTooltip>
 				)}
+				{children}
 			</div>
-			{(error || maxLength != null) && (
+			{(error || hint || maxLength != null) && (
 				<div className="flex items-start gap-3">
 					{error && (
 						<p id={errorId} className="flex flex-1 gap-1.5 text-small text-error-strong">
@@ -248,10 +262,16 @@ export default function AppTextInput({
 							<span>{error}</span>
 						</p>
 					)}
+					{hint && (
+						<span id={hintId} className="ms-auto shrink-0 text-small text-muted">
+							{hint}
+						</span>
+					)}
 					{maxLength != null && (
 						<span
 							className={clsx(
-								"ms-auto shrink-0 text-small tabular-nums",
+								"shrink-0 text-small tabular-nums",
+								!hint && "ms-auto",
 								isNearLimit ? "text-warning-strong" : "text-muted",
 							)}
 						>
