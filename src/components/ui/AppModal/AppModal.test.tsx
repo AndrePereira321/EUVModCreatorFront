@@ -101,6 +101,9 @@ test.each([
 test("asks the parent to close on Escape instead of closing itself", async () => {
 	const onClose = vi.fn();
 	const screen = await setup({ onClose });
+	// The previous test leaves the mouse where this modal's close button renders; its tooltip would take the Escape.
+	await screen.getByRole("heading", { name: "Leave without saving?" }).hover();
+	await expect.element(screen.getByRole("tooltip", { name: "Close", includeHidden: true })).not.toBeVisible();
 
 	await userEvent.keyboard("{Escape}");
 
