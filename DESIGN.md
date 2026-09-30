@@ -99,6 +99,15 @@ label. Without `text` the button is icon-only: a square of the size's height (32
 its width, named by an `aria-label`. Ghost is the transparent option. A label wider than the button's container ends
 in an ellipsis.
 
+### Modal
+
+`AppModal` is a surface panel, 512px wide at most, with an 8px radius, a 1px border and a large soft shadow, over a
+50% near-black scrim. It is centred from the `sm` breakpoint up and sits at the bottom of the screen on a phone, 16px
+from every edge. The title is the display serif at 20px, with a ghost neutral close button in the top corner. The body
+scrolls when it runs past the screen height. The footer is a tray in the page background colour, separated by a 1px
+border; its buttons sit at the right, Cancel (neutral outline) before Confirm (primary solid), and stack full-width
+with Confirm on top on a phone. It fades in and rises 12px over 200ms, fading only under reduced motion.
+
 ## Do's and Don'ts
 
 ### Do:
