@@ -7,11 +7,11 @@ import { APP_RADIUS_MD } from "../../../constants/styles/radius.ts";
 import { APP_SIZE_MD } from "../../../constants/styles/size.ts";
 import { APP_VARIANT_PRIMARY } from "../../../constants/styles/variant.ts";
 import type { AppFill, AppRadius, AppSize, AppVariant } from "../../../types/styles.ts";
+import { RADIUS_CLASSES } from "../radius.classes.ts";
 import {
 	BASE_CLASSES,
 	FILL_CLASSES,
 	ICON_ONLY_SIZE_CLASSES,
-	RADIUS_CLASSES,
 	SIZE_CLASSES,
 	VARIANT_CLASSES,
 } from "./AppButton.classes.ts";

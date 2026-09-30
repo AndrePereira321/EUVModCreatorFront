@@ -6,7 +6,10 @@
 		"home": "Home",
 		"confirm": "Confirm",
 		"cancel": "Cancel",
-		"close": "Close"
+		"close": "Close",
+		"optional": "(optional)",
+		"clear": "Clear",
+		"loading": "Loading…"
 	},
 	"auth": {
 		"login": "Login",

@@ -25,6 +25,7 @@ const meta = {
 	args: {
 		text: "Get the mod's files and the steps to install them",
 		isLabel: false,
+		openOnClick: false,
 		children: (triggerProps) => <AppButton {...triggerProps} text="Download" startIcon={DownloadSimpleIcon} />,
 	},
 	argTypes: {

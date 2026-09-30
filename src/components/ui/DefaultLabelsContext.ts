@@ -4,6 +4,9 @@ export interface DefaultLabels {
 	confirm: string;
 	cancel: string;
 	close: string;
+	optional: string;
+	clear: string;
+	loading: string;
 }
 
 export const DefaultLabelsContext = createContext<DefaultLabels | null>(null);

@@ -8,7 +8,14 @@ import AppButton from "../AppButton/AppButton.tsx";
 import { DefaultLabelsContext } from "../DefaultLabelsContext.ts";
 import AppModal from "./AppModal.tsx";
 
-const DEFAULT_LABELS = { confirm: "Confirm", cancel: "Cancel", close: "Close" };
+const DEFAULT_LABELS = {
+	confirm: "Confirm",
+	cancel: "Cancel",
+	close: "Close",
+	optional: "(optional)",
+	clear: "Clear",
+	loading: "Loading…",
+};
 
 const meta = {
 	component: AppModal,

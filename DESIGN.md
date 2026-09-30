@@ -131,7 +131,7 @@ heading and subheading. Cormorant is only used at 26px and up. Weights are 400, 
 
 ## Shapes
 
-Buttons default to a 6px radius, with square, 4px and pill options. Borders are 1px.
+Buttons and text inputs default to a 6px radius, with square, 4px and pill options. Borders are 1px.
 
 ## Components
 
@@ -146,6 +146,26 @@ Labels are Noto Sans at weight 500: 14px (sm), 16px (md) or 18px (lg). Optional 
 Phosphor icons, drawn at the text size in the text colour, 8px from the label. Without `text` the button is icon-only: a square of the size's height (32, 40 or 48px) with the icon at half
 its width, named by an `aria-label`. Ghost is the transparent option. A label wider than the button's container ends
 in an ellipsis.
+
+### Text input
+
+`AppTextInput` stacks a label (label role), the field, and a footer for the error and the character count. With
+`isOptional`, the label ends in a muted "(optional)" at weight 400. A `description` isn't shown on the page: it opens
+in an `AppTooltip` from a muted 16px info icon beside the label's first line, on hover, Tab, click or tap; a tap
+outside closes it. The field is a surface fill with a 1px `input` border; hover blends the border 50% toward the text
+colour. `size` and `radius` match the button's: 32, 40 or 48px tall, so a field and a button of the same size line up
+in a row. The value is 14px (sm), 16px (md) or 18px (lg), at weight 400. Placeholders are muted. The focus ring is the
+global 2px one, drawn around the whole field.
+
+Inside the field, in order: an optional `startIcon`, the value, a muted `suffix` (a unit such as "%"), an optional
+`endIcon`, a spinner while `isLoading`, and, with `isClearable` and a value, a ghost × button named by a "Clear"
+tooltip that empties the field and puts focus back in it. Icons are muted, 16px on sm and md and 20px on lg; the
+spinner turns only when motion is allowed. Clicking anywhere in the field outside the value focuses the value.
+
+With `maxLength`, the footer shows the count, as "12/40", at its end, muted, turning warning-strong from 90% of the
+limit. With an `error`, the border and the focus ring turn to the error colour, and the message sits at the footer's
+start in the small role, error-strong, after a filled warning-circle icon. Disabled fades the whole field, label
+included, to 50%.
 
 ### Modal
 
@@ -163,7 +183,8 @@ the dark one. Small text role, 6px radius, a medium shadow, 256px wide at most. 
 opens below when there is no room above, and keeps 8px from the sides of the screen. It fades and grows from 95% over
 150ms, fading only under reduced motion. It opens 128ms after the pointer arrives, or at once when Tab moves focus to
 its trigger; once one tooltip has been open, its neighbours open at once. Touch never opens it, and neither does the
-focus a modal moves to its first button when it opens.
+focus a modal moves to its first button when it opens. With `openOnClick` (the text input's info icon), a click, tap
+or Enter on the trigger opens it too, and a tap or click outside closes it.
 
 ## Do's and Don'ts
 

@@ -1,5 +1,4 @@
 import { APP_FILL_GHOST, APP_FILL_OUTLINE, APP_FILL_SOFT, APP_FILL_SOLID } from "../../../constants/styles/fill.ts";
-import { APP_RADIUS_FULL, APP_RADIUS_MD, APP_RADIUS_NONE, APP_RADIUS_SM } from "../../../constants/styles/radius.ts";
 import { APP_SIZE_LG, APP_SIZE_MD, APP_SIZE_SM } from "../../../constants/styles/size.ts";
 import {
 	APP_VARIANT_ERROR,
@@ -11,7 +10,7 @@ import {
 	APP_VARIANT_TERTIARY,
 	APP_VARIANT_WARNING,
 } from "../../../constants/styles/variant.ts";
-import type { AppFill, AppRadius, AppSize, AppVariant } from "../../../types/styles.ts";
+import type { AppFill, AppSize, AppVariant } from "../../../types/styles.ts";
 
 export const BASE_CLASSES =
 	"inline-flex max-w-full min-w-0 touch-manipulation items-center justify-center gap-2 border font-medium transition-colors active:translate-y-px disabled:pointer-events-none disabled:opacity-50";
@@ -54,11 +53,4 @@ export const ICON_ONLY_SIZE_CLASSES: Record<AppSize, string> = {
 	[APP_SIZE_SM]: "size-8 shrink-0 *:size-4",
 	[APP_SIZE_MD]: "size-10 shrink-0 *:size-5",
 	[APP_SIZE_LG]: "size-12 shrink-0 *:size-6",
-};
-
-export const RADIUS_CLASSES: Record<AppRadius, string> = {
-	[APP_RADIUS_NONE]: "rounded-none",
-	[APP_RADIUS_SM]: "rounded-sm",
-	[APP_RADIUS_MD]: "rounded-md",
-	[APP_RADIUS_FULL]: "rounded-full",
 };

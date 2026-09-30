@@ -11,6 +11,9 @@ export default function AppMain() {
 			confirm: t("generic.confirm"),
 			cancel: t("generic.cancel"),
 			close: t("generic.close"),
+			optional: t("generic.optional"),
+			clear: t("generic.clear"),
+			loading: t("generic.loading"),
 		}),
 		[t],
 	);

@@ -1,6 +1,7 @@
 import {
 	type CSSProperties,
 	type FocusEvent,
+	type MouseEvent,
 	type PointerEvent,
 	type ReactNode,
 	useEffect,
@@ -35,8 +36,9 @@ export interface AppTooltipTriggerProps {
 	"aria-describedby"?: string;
 	style: CSSProperties;
 	onPointerEnter: (event: PointerEvent<HTMLElement>) => void;
-	onPointerLeave: () => void;
+	onPointerLeave: (event: PointerEvent<HTMLElement>) => void;
 	onPointerDown: () => void;
+	onClick?: (event: MouseEvent<HTMLElement>) => void;
 	onFocus: (event: FocusEvent<HTMLElement>) => void;
 	onBlur: () => void;
 }
@@ -44,13 +46,15 @@ export interface AppTooltipTriggerProps {
 export interface AppTooltipProps {
 	text: string;
 	isLabel?: boolean;
+	openOnClick?: boolean;
 	children: (triggerProps: AppTooltipTriggerProps) => ReactNode;
 }
 
-export default function AppTooltip({ text, isLabel = false, children }: AppTooltipProps) {
+export default function AppTooltip({ text, isLabel = false, openOnClick = false, children }: AppTooltipProps) {
 	const id = useId();
 	const anchorName = `--tooltip${id}`;
 	const tooltipRef = useRef<HTMLSpanElement>(null);
+	const triggerRef = useRef<HTMLElement>(null);
 	const [request, setRequest] = useState<TooltipRequest>({ open: false, delay: 0 });
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -76,14 +80,24 @@ export default function AppTooltip({ text, isLabel = false, children }: AppToolt
 				setRequest({ open: false, delay: 0 });
 			}
 		};
+		const closeOnOutsidePointer = (event: Event) => {
+			const target = event.target as Node;
+			if (!tooltip.contains(target) && !triggerRef.current?.contains(target)) {
+				setRequest({ open: false, delay: 0 });
+			}
+		};
 		document.addEventListener("keydown", closeOnEscape, { capture: true });
+		if (openOnClick) {
+			document.addEventListener("pointerdown", closeOnOutsidePointer, { capture: true });
+		}
 		return () => {
 			document.removeEventListener("keydown", closeOnEscape, { capture: true });
+			document.removeEventListener("pointerdown", closeOnOutsidePointer, { capture: true });
 			tooltip.hidePopover();
 			openTooltips--;
 			warmUntil = Date.now() + WARM_MS;
 		};
-	}, [isOpen]);
+	}, [isOpen, openOnClick]);
 
 	const open = (delay: number) => {
 		if (text) {
@@ -101,8 +115,16 @@ export default function AppTooltip({ text, isLabel = false, children }: AppToolt
 				open(OPEN_DELAY_MS);
 			}
 		},
-		onPointerLeave: () => close(CLOSE_DELAY_MS),
-		onPointerDown: () => close(0),
+		onPointerLeave: (event) => {
+			if (event.pointerType !== "touch") {
+				close(CLOSE_DELAY_MS);
+			}
+		},
+		onPointerDown: () => {
+			if (!openOnClick) {
+				close(0);
+			}
+		},
 		onFocus: (event) => {
 			if (lastKeyWasTab && event.currentTarget.matches(":focus-visible")) {
 				open(0);
@@ -110,6 +132,12 @@ export default function AppTooltip({ text, isLabel = false, children }: AppToolt
 		},
 		onBlur: () => close(0),
 	};
+	if (openOnClick) {
+		triggerProps.onClick = (event) => {
+			triggerRef.current = event.currentTarget;
+			open(0);
+		};
+	}
 
 	return (
 		<>

@@ -288,7 +288,7 @@
 	--foreground: var(--color-neutral-100);
 	--muted: var(--color-neutral-400);
 	--border: var(--color-neutral-800);
-	--input: var(--color-neutral-600);
+	--input: var(--color-neutral-500);
 	--ring: var(--color-primary-400);
 
 	/* Fills lighten so they lift off the dark page, text-on-fill flips to neutral, panels drop to the 900 tint. */

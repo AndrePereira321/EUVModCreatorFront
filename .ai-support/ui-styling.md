@@ -89,5 +89,40 @@ colour change: a mix deeper than the hover's 25% drops warning's text below 4.5:
 
 ## When to move maps out of the component
 
-The variant map and the radius map aren't button-specific. When a second component (Badge, Alert, Chip) needs them,
-move those two to a shared place. Fill and size maps hold per-component heights, padding and hovers, so they stay.
+A map moves to `components/ui/<prop>.classes.ts` once a second component needs it. The radius map has:
+`ui/radius.classes.ts` serves `AppButton` and `AppTextInput`. The variant map is still button-only; move it the same
+way when a Badge, Alert or Chip needs it. Fill and size maps hold per-component heights, padding and hovers, so they
+stay in each component's own `.classes.ts`.
+
+## Text input states
+
+`AppTextInput` has no `variant` or `fill`: colour on a field means state, not role. Valid and invalid are two
+alternative class strings, like the button's two size maps, so each keeps one border colour.
+
+**The bordered box is a `<div>`, not the `<input>`.** Icons, a suffix, a spinner and a clear button can all sit at the
+end at once, and their widths vary, so padding the input around absolutely placed items can't work. The div is a flex
+row with the border, fill, height and padding; the `<input>` inside is borderless, `flex-1`, and stretched to full
+height. Flex order is DOM order, so the ends swap in a right-to-left language with nothing extra.
+
+- **Focus ring:** the input sets `outline-none`, and the div draws the ring with `has-[input:focus-visible]:outline-*`,
+  reading `var(--ring)`. It's `has-[input:…]` and not `focus-within`, so a focused clear button gets its own ring and
+  the field doesn't get a second one. The invalid class sets `[--ring:var(--error)]` on the div, so the ring turns red.
+- **Clicks on the box:** `onMouseDown` on the div focuses the input when the click lands on padding or an icon, and
+  `preventDefault` stops the browser moving focus to the page first. Clicks on the input or a button pass through.
+  Keyboard users never land on the div, which is why the lint rule for handlers on static elements is disabled there.
+- **Focus by id:** `clear` and the click shortcut call `document.getElementById(inputId)`, not a ref. A ref of our own
+  would have to be merged with the one a caller may pass through `{...rest}`; the id is already unique.
+
+Translated words the component shows itself, "(optional)", "Clear" and "Loading…", come from `DefaultLabels`, each with
+a prop to override it (`optionalLabel`, `clearLabel`, `loadingLabel`), the same as `AppModal`'s "Close". `isLoading`
+also writes "Loading…" into a visually hidden `<output aria-live="polite">`, which is always rendered, because a
+live region added at the same moment as its text is often not announced.
+
+The description lives in a tooltip, so the input can't point `aria-describedby` at visible text. A `hidden` span holds
+a copy for it: a hidden element still counts when an ARIA attribute references it by id. The info button takes the
+tooltip as its name (`isLabel`), as the icon-only buttons in the `AppTooltip` story do.
+
+The border is the `--input` token, the only thing that uses it. Non-text UI needs 3:1 against what is around it, and a
+field sits on the page or on a surface (a modal, a card): `neutral-500` gives 3.57 / 3.78 in light and 4.76 / 4.05 in
+dark. Dark's old `neutral-600` gave 2.55 on surface. Axe doesn't check borders, so recheck by calculation after
+changing either ramp.
