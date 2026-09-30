@@ -109,6 +109,13 @@ resolved string, and the parent does the lookup: `<AppMenuItem title={t("generic
 **Write for a non-technical player, not a developer.** Short, plain sentences, no jargon — same target
 audience as the rest of the app, applied to copy.
 
+## No React Compiler
+
+**React Compiler is deliberately not used.** Andre is learning hooks and memoization by hand, and the compiler would
+auto-memoize away the re-render behaviour he wants to understand. Don't add `babel-plugin-react-compiler` or its lint
+rules, and don't offer it as the fix for a re-render problem. Memoize explicitly — `useMemo`, `useCallback`,
+`React.memo` — and explain why each one is there.
+
 ## Toolchain gotchas
 
 **Oxc, not ESLint/Prettier.** Linting is `oxlint`, formatting is `oxfmt`. Never add `.eslintrc`, `.prettierrc`,
