@@ -5,6 +5,7 @@ import { APP_FILL_GHOST, APP_FILL_OUTLINE } from "../../../constants/styles/fill
 import { APP_SIZE_SM } from "../../../constants/styles/size.ts";
 import { APP_VARIANT_NEUTRAL, APP_VARIANT_PRIMARY } from "../../../constants/styles/variant.ts";
 import AppButton from "../AppButton/AppButton.tsx";
+import AppTooltip from "../AppTooltip/AppTooltip.tsx";
 import { useDefaultLabels } from "../DefaultLabelsContext.ts";
 
 export interface AppModalProps {
@@ -80,14 +81,18 @@ export default function AppModal({
 					</div>
 				) : null}
 				<div className="-me-2 -mt-0.5 shrink-0">
-					<AppButton
-						variant={APP_VARIANT_NEUTRAL}
-						fill={APP_FILL_GHOST}
-						size={APP_SIZE_SM}
-						startIcon={XIcon}
-						aria-label={closeLabel ?? defaultLabels.close}
-						onClick={onClose}
-					/>
+					<AppTooltip text={closeLabel ?? defaultLabels.close} isLabel>
+						{(triggerProps) => (
+							<AppButton
+								{...triggerProps}
+								variant={APP_VARIANT_NEUTRAL}
+								fill={APP_FILL_GHOST}
+								size={APP_SIZE_SM}
+								startIcon={XIcon}
+								onClick={onClose}
+							/>
+						)}
+					</AppTooltip>
 				</div>
 			</div>
 			<div

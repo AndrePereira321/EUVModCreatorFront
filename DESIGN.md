@@ -151,10 +151,19 @@ in an ellipsis.
 
 `AppModal` is a surface panel, 512px wide at most, with an 8px radius, a 1px border and a large soft shadow, over a
 50% near-black scrim. It is centred from the `sm` breakpoint up and sits at the bottom of the screen on a phone, 16px
-from every edge. The title is in the heading role, with a ghost neutral close button in the top corner. The body
-scrolls when it runs past the screen height. The footer is a tray in the page background colour, separated by a 1px
-border; its buttons sit at the right, Cancel (neutral outline) before Confirm (primary solid), and stack full-width
-with Confirm on top on a phone. It fades in and rises 12px over 200ms, fading only under reduced motion.
+from every edge. The title is in the heading role, with a ghost neutral close button in the top corner, named by a
+"Close" tooltip. The body scrolls when it runs past the screen height. The footer is a tray in the page background
+colour, separated by a 1px border; its buttons sit at the right, Cancel (neutral outline) before Confirm (primary
+solid), and stack full-width with Confirm on top on a phone. It fades in and rises 12px over 200ms, fading only under reduced motion.
+
+### Tooltip
+
+`AppTooltip` inverts the page: `foreground` fill with `background` text, so it is dark in the light theme and light in
+the dark one. Small text role, 6px radius, a medium shadow, 256px wide at most. It sits 8px above its trigger, centred,
+opens below when there is no room above, and keeps 8px from the sides of the screen. It fades and grows from 95% over
+150ms, fading only under reduced motion. It opens 128ms after the pointer arrives, or at once when Tab moves focus to
+its trigger; once one tooltip has been open, its neighbours open at once. Touch never opens it, and neither does the
+focus a modal moves to its first button when it opens.
 
 ## Do's and Don'ts
 
