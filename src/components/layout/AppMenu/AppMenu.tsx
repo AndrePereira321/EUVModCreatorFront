@@ -1,8 +1,9 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import AppButton from "../../ui/AppButton/AppButton.tsx";
 import AppMenuItem, { type AppMenuItemProps } from "./AppMenuItem.tsx";
+import AppRegisterModal from "./AppRegisterModal.tsx";
 
 export default function AppMenu() {
 	const menuId = useId();
@@ -15,6 +16,9 @@ export default function AppMenu() {
 			path: "/",
 		},
 	];
+
+	const [openModal, setOpenModal] = useState<"login" | "register" | null>(null);
+	const closeModal = () => setOpenModal(null);
 
 	return (
 		<nav className="flex items-center gap-4 border-b border-primary-300 px-2 py-4">
@@ -30,9 +34,10 @@ export default function AppMenu() {
 				</ul>
 			</div>
 			<div className="ml-auto flex gap-2 px-2">
-				<AppButton text={t("auth.login")}></AppButton>
-				<AppButton variant="secondary" text={t("auth.register")}></AppButton>
+				<AppButton text={t("auth.login")} />
+				<AppButton variant="secondary" text={t("auth.register")} onClick={() => setOpenModal("register")} />
 			</div>
+			<AppRegisterModal isOpen={openModal === "register"} onClose={closeModal} />
 		</nav>
 	);
 }

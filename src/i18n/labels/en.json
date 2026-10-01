@@ -17,6 +17,11 @@
 	},
 	"auth": {
 		"login": "Login",
-		"register": "Register"
+		"register": "Register",
+		"createAccountTitle": "Create your account",
+		"createAccount": "Create account",
+		"username": "Username",
+		"password": "Password",
+		"passwordConfirm": "Confirm password"
 	}
 }
