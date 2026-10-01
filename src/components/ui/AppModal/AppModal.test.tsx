@@ -29,8 +29,7 @@ function setup(overrides: Partial<AppModalProps> = {}) {
 	const props = {
 		isOpen: true,
 		title: "Leave without saving?",
-		onConfirmClicked: vi.fn(),
-		onCancelClicked: vi.fn(),
+		onConfirm: vi.fn(),
 		onClose: vi.fn(),
 		...overrides,
 	};
@@ -44,13 +43,7 @@ function ModalWithOpener() {
 	return (
 		<>
 			<AppButton text="Open" onClick={() => setIsOpen(true)} />
-			<AppModal
-				isOpen={isOpen}
-				title="Leave without saving?"
-				onClose={close}
-				onCancelClicked={close}
-				onConfirmClicked={close}
-			/>
+			<AppModal isOpen={isOpen} title="Leave without saving?" onClose={close} onConfirm={close} />
 		</>
 	);
 }
@@ -90,16 +83,17 @@ test("uses the labels it is given", async () => {
 });
 
 test.each([
-	["Confirm", "onConfirmClicked"],
-	["Cancel", "onCancelClicked"],
-	["Close", "onClose"],
-] as const)("clicking %s calls %s", async (button, handler) => {
-	const handlers = { onConfirmClicked: vi.fn(), onCancelClicked: vi.fn(), onClose: vi.fn() };
+	["Confirm", "onConfirm", "onClose"],
+	["Cancel", "onClose", "onConfirm"],
+	["Close", "onClose", "onConfirm"],
+] as const)("clicking %s calls %s and not %s", async (button, called, notCalled) => {
+	const handlers = { onConfirm: vi.fn(), onClose: vi.fn() };
 	const screen = await setup(handlers);
 
 	await screen.getByRole("button", { name: button }).click();
 
-	expect(handlers[handler]).toHaveBeenCalledOnce();
+	expect(handlers[called]).toHaveBeenCalledOnce();
+	expect(handlers[notCalled]).not.toHaveBeenCalled();
 });
 
 test("asks the parent to close on Escape instead of closing itself", async () => {

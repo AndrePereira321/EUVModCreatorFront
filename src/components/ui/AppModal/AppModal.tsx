@@ -1,5 +1,5 @@
 import { XIcon } from "@phosphor-icons/react";
-import { type MouseEventHandler, type ReactNode, type SyntheticEvent, useEffect, useId, useRef } from "react";
+import { type ReactNode, type SyntheticEvent, useEffect, useId, useRef } from "react";
 
 import { APP_FILL_GHOST, APP_FILL_OUTLINE } from "../../../constants/styles/fill.ts";
 import { APP_SIZE_SM } from "../../../constants/styles/size.ts";
@@ -14,12 +14,12 @@ export interface AppModalProps {
 	closeLabel?: string;
 	children?: ReactNode;
 	isOpen: boolean;
+	confirmDisabled?: boolean;
 	confirmLabel?: string;
 	cancelLabel?: string;
 	footer?: ReactNode;
-	onConfirmClicked?: MouseEventHandler<HTMLButtonElement>;
-	onCancelClicked?: MouseEventHandler<HTMLButtonElement>;
-	onClose?: () => void;
+	onConfirm?: () => void;
+	onClose: () => void;
 }
 
 export default function AppModal({
@@ -29,10 +29,10 @@ export default function AppModal({
 	children,
 	isOpen,
 	confirmLabel,
+	confirmDisabled,
 	cancelLabel,
 	footer,
-	onCancelClicked,
-	onConfirmClicked,
+	onConfirm,
 	onClose,
 }: AppModalProps) {
 	const defaultLabels = useDefaultLabels();
@@ -52,7 +52,7 @@ export default function AppModal({
 
 	const handleCancel = (event: SyntheticEvent<HTMLDialogElement>) => {
 		event.preventDefault();
-		onClose?.();
+		onClose();
 	};
 
 	const renderHeader = () => {
@@ -111,12 +111,13 @@ export default function AppModal({
 							variant={APP_VARIANT_NEUTRAL}
 							fill={APP_FILL_OUTLINE}
 							text={cancelLabel ?? defaultLabels.cancel}
-							onClick={onCancelClicked}
+							onClick={onClose}
 						/>
 						<AppButton
 							variant={APP_VARIANT_PRIMARY}
 							text={confirmLabel ?? defaultLabels.confirm}
-							onClick={onConfirmClicked}
+							onClick={onConfirm}
+							disabled={confirmDisabled}
 						/>
 					</>
 				)}

@@ -38,8 +38,7 @@ const meta = {
 		isOpen: true,
 		title: "Leave without saving?",
 		children: <p>You changed three values since you last saved. If you leave now, those changes are lost.</p>,
-		onConfirmClicked: fn(),
-		onCancelClicked: fn(),
+		onConfirm: fn(),
 		onClose: fn(),
 	},
 	argTypes: {
@@ -57,15 +56,11 @@ const meta = {
 				<AppModal
 					{...args}
 					onClose={() => {
-						args.onClose?.();
+						args.onClose();
 						close();
 					}}
-					onCancelClicked={(event) => {
-						args.onCancelClicked?.(event);
-						close();
-					}}
-					onConfirmClicked={(event) => {
-						args.onConfirmClicked?.(event);
+					onConfirm={() => {
+						args.onConfirm?.();
 						close();
 					}}
 				/>
